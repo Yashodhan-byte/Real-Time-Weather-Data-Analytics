@@ -6,74 +6,97 @@
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <title>Real-Time Weather Intelligence Command Center</title>
     
-    <!-- Google Fonts, ApexCharts, Leaflet Maps & Globe.gl -->
+    <!-- Google Fonts, ApexCharts, Leaflet Maps -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
+        /* Theme Tokens (Dark Mode Default vs Light Mode) */
         :root {
-            --bg-dark: #05070e;
-            --card-bg: rgba(13, 19, 36, 0.85);
-            --card-hover: rgba(22, 32, 59, 0.95);
+            --bg-body: #080d1a;
+            --card-bg: rgba(15, 23, 42, 0.85);
+            --card-hover: rgba(30, 41, 59, 0.95);
             --border-color: rgba(255, 255, 255, 0.1);
             
-            --primary: #38bdf8;
-            --primary-glow: rgba(56, 189, 248, 0.4);
-            --secondary: #a855f7;
+            --primary: #10b981; /* Neon Emerald */
+            --primary-glow: rgba(16, 185, 129, 0.35);
+            --secondary: #6366f1; /* Cyber Sapphire */
+            --accent: #06b6d4; /* Electric Cyan */
             
             --heat-red: #ff3b5c;
             --heat-glow: rgba(255, 59, 92, 0.4);
-            --cold-blue: #00f0ff;
-            --cold-glow: rgba(0, 240, 255, 0.4);
-            --success: #10b981;
+            --cold-blue: #38bdf8;
+            --cold-glow: rgba(56, 189, 248, 0.4);
             
             --text-main: #f8fafc;
             --text-muted: #94a3b8;
+            --input-bg: rgba(0, 0, 0, 0.3);
+            --shadow-color: rgba(0, 0, 0, 0.4);
+        }
+
+        /* Light Mode Styles */
+        body.light-mode {
+            --bg-body: #f1f5f9;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-hover: rgba(241, 245, 249, 1);
+            --border-color: rgba(0, 0, 0, 0.1);
+            
+            --primary: #059669;
+            --primary-glow: rgba(5, 150, 105, 0.25);
+            --secondary: #4f46e5;
+            --accent: #0891b2;
+            
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --input-bg: rgba(255, 255, 255, 0.8);
+            --shadow-color: rgba(0, 0, 0, 0.08);
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
+            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
         }
 
         body {
             font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
+            background-color: var(--bg-body);
             color: var(--text-main);
             min-height: 100vh;
             padding: 24px;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 15% 15%, rgba(56, 189, 248, 0.08) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(168, 85, 247, 0.08) 0%, transparent 45%);
+                radial-gradient(circle at 15% 15%, var(--primary-glow) 0%, transparent 45%),
+                radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.08) 0%, transparent 45%);
             background-attachment: fixed;
         }
 
         /* Marquee Ticker */
         .ticker-wrap {
             width: 100%;
-            background: rgba(13, 19, 36, 0.9);
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
-            border-radius: 12px;
-            padding: 8px 16px;
+            border-radius: 14px;
+            padding: 10px 18px;
             margin-bottom: 20px;
             overflow: hidden;
             backdrop-filter: blur(10px);
             display: flex;
             align-items: center;
             gap: 12px;
+            box-shadow: 0 4px 20px var(--shadow-color);
         }
 
         .ticker-title {
-            background: linear-gradient(135deg, var(--heat-red), var(--secondary));
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
             font-size: 0.75rem;
             font-weight: 800;
-            padding: 4px 10px;
-            border-radius: 6px;
+            padding: 4px 12px;
+            border-radius: 8px;
             text-transform: uppercase;
             letter-spacing: 1px;
             white-space: nowrap;
@@ -100,10 +123,10 @@
             right: 24px;
             padding: 14px 28px;
             border-radius: 14px;
-            background: linear-gradient(135deg, #10b981, #059669);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
             font-weight: 700;
-            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            box-shadow: 0 10px 30px var(--primary-glow);
             backdrop-filter: blur(12px);
             z-index: 9999;
             transform: translateY(-100px);
@@ -129,7 +152,7 @@
         .header-title h1 {
             font-size: 2.2rem;
             font-weight: 900;
-            background: linear-gradient(135deg, #38bdf8 0%, #a855f7 50%, #00f0ff 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
@@ -148,6 +171,27 @@
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
+        }
+
+        /* Mode Switch Toggle Button */
+        .theme-toggle-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 10px 18px;
+            border-radius: 14px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            backdrop-filter: blur(10px);
+            transition: all 0.25s ease;
+        }
+        .theme-toggle-btn:hover {
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
         }
 
         .btn {
@@ -174,9 +218,10 @@
         }
 
         .btn-primary {
-            background: linear-gradient(135deg, #0284c7, #7c3aed);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
             border: none;
-            box-shadow: 0 6px 20px rgba(124, 58, 237, 0.35);
+            box-shadow: 0 6px 20px var(--primary-glow);
         }
 
         select {
@@ -186,11 +231,16 @@
             padding: 10px 18px;
             border-radius: 14px;
             font-family: 'Outfit', sans-serif;
-            font-weight: 600;
+            font-weight: 700;
             font-size: 0.95rem;
             outline: none;
             cursor: pointer;
             backdrop-filter: blur(12px);
+        }
+
+        select:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 16px var(--primary-glow);
         }
 
         /* City Mini Cards */
@@ -218,12 +268,12 @@
             background: var(--card-hover);
             border-color: var(--primary);
             transform: translateY(-4px);
-            box-shadow: 0 10px 25px rgba(56, 189, 248, 0.2);
+            box-shadow: 0 10px 25px var(--primary-glow);
         }
 
         .city-name { font-weight: 700; font-size: 0.95rem; }
         .city-country { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
-        .city-temp { font-size: 1.5rem; font-weight: 800; color: #fff; }
+        .city-temp { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
 
         /* KPI Grid */
         .kpi-grid {
@@ -239,6 +289,7 @@
             border-radius: 20px;
             padding: 22px;
             backdrop-filter: blur(16px);
+            box-shadow: 0 6px 20px var(--shadow-color);
             transition: all 0.3s ease;
         }
 
@@ -259,7 +310,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .kpi-sub { font-size: 0.82rem; color: var(--primary); margin-top: 8px; }
+        .kpi-sub { font-size: 0.82rem; color: var(--primary); margin-top: 8px; font-weight: 600; }
 
         /* Layout Grid */
         .grid-2col {
@@ -277,7 +328,7 @@
             border-radius: 22px;
             padding: 24px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         .panel-header {
@@ -297,7 +348,7 @@
             gap: 10px;
         }
 
-        /* 3D Globe & Map Container */
+        /* Map Container */
         #map-container {
             position: relative;
             width: 100%;
@@ -310,52 +361,51 @@
         #map {
             width: 100%;
             height: 100%;
-            background: #090d18;
         }
 
         /* Leaflet Marker Pulse */
         .radar-pin {
-            background: linear-gradient(135deg, #00f0ff, #7c3aed);
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: 2px solid #fff;
             border-radius: 50%;
-            box-shadow: 0 0 15px rgba(0,240,255,0.9);
+            box-shadow: 0 0 15px var(--primary-glow);
             cursor: pointer;
             width: 22px; height: 22px;
             animation: pulse-glow 2s infinite;
         }
 
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0.7); }
-            70% { box-shadow: 0 0 0 15px rgba(0, 240, 255, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(0, 240, 255, 0); }
+            0% { box-shadow: 0 0 0 0 var(--primary-glow); }
+            70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
         }
 
         .map-tooltip {
-            background: rgba(13, 19, 36, 0.95) !important;
-            border: 1px solid #38bdf8 !important;
-            color: #fff !important;
+            background: var(--card-bg) !important;
+            border: 1px solid var(--primary) !important;
+            color: var(--text-main) !important;
             font-family: 'Outfit', sans-serif !important;
             font-size: 0.85rem !important;
             border-radius: 8px !important;
             padding: 6px 12px !important;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.5) !important;
+            box-shadow: 0 4px 15px var(--shadow-color) !important;
         }
 
         /* City Popup Panel */
         .city-popup-panel {
-            background: rgba(18, 24, 41, 0.95);
+            background: var(--card-bg);
             border: 1px solid var(--border-color);
             border-radius: 18px;
             padding: 20px;
             backdrop-filter: blur(20px);
             margin-top: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         .city-popup-title {
             font-size: 1.3rem;
             font-weight: 800;
-            color: #fff;
+            color: var(--text-main);
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -369,7 +419,7 @@
         }
 
         .mini-stat {
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 12px;
             padding: 10px 14px;
@@ -379,7 +429,7 @@
 
         /* Anomaly list & pills */
         .search-input {
-            background: rgba(0, 0, 0, 0.4);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-main);
             padding: 8px 16px;
@@ -396,7 +446,7 @@
             font-size: 0.82rem;
             font-weight: 700;
             cursor: pointer;
-            background: rgba(255, 255, 255, 0.04);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             color: var(--text-muted);
             transition: all 0.25s ease;
@@ -409,7 +459,7 @@
 
         .anomaly-scroll { max-height: 350px; overflow-y: auto; padding-right: 6px; }
         .anomaly-card {
-            background: rgba(255, 255, 255, 0.03);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 14px 18px;
@@ -429,7 +479,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
         .badge-heat { background: rgba(255, 59, 92, 0.18); color: var(--heat-red); border: 1px solid var(--heat-red); }
-        .badge-cold { background: rgba(0, 240, 255, 0.18); color: var(--cold-blue); border: 1px solid var(--cold-blue); }
+        .badge-cold { background: rgba(56, 189, 248, 0.18); color: var(--cold-blue); border: 1px solid var(--cold-blue); }
 
         /* Dataset Info Card & Raw Preview */
         .dataset-meta-grid {
@@ -439,7 +489,7 @@
             margin-bottom: 20px;
         }
         .meta-box {
-            background: rgba(0, 0, 0, 0.3);
+            background: var(--input-bg);
             border: 1px solid var(--border-color);
             border-radius: 14px;
             padding: 14px 18px;
@@ -474,14 +524,19 @@
 
     <header>
         <div class="header-title">
-            <h1>🌐 Real-Time Weather Intelligence Platform</h1>
+            <h1>🌿 Real-Time Weather Intelligence Platform</h1>
             <p>PySpark Window Analytics, Hive Partitioning & Open-Meteo Ingestion (21 Global Cities)</p>
         </div>
         <div class="controls-bar">
-            <!-- Cascading Country Dropdown -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Country:</label>
+            <!-- Theme Toggle Bar -->
+            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">
+                🌙 Dark Mode
+            </button>
+
+            <!-- Step 1: Country Selection -->
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">1. Select Country:</label>
             <select id="countrySelect" onchange="onCountryChanged()">
-                <option value="ALL">All Countries</option>
+                <option value="" disabled selected>-- Choose Country --</option>
                 <option value="Japan">Japan 🇯🇵</option>
                 <option value="UK">UK 🇬🇧</option>
                 <option value="USA">USA 🇺🇸</option>
@@ -491,10 +546,10 @@
                 <option value="Brazil">Brazil 🇧🇷</option>
             </select>
 
-            <!-- Dynamic City Dropdown -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">City:</label>
-            <select id="citySelect" onchange="onCityChanged()">
-                <option value="Tokyo">Tokyo (Japan)</option>
+            <!-- Step 2: City Selection -->
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">2. Select City:</label>
+            <select id="citySelect" onchange="onCityChanged()" disabled>
+                <option value="">-- Choose Country First --</option>
             </select>
 
             <button class="btn btn-primary" id="btnRefresh" onclick="triggerRefresh()">
@@ -535,15 +590,15 @@
     <div class="grid-2col">
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">📡 Tactical Station Radar (Pins filtered by Country & Selected City)</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">Click any pin to inspect city details</div>
+                <div class="panel-title">📡 Station Tactical Radar (Select Country & City Above)</div>
+                <div style="font-size: 0.85rem; color: var(--text-muted);">Click pin to view city analytics</div>
             </div>
             <div id="map-container">
                 <div id="map"></div>
             </div>
 
             <!-- Selected City Deep-Dive Detail Panel -->
-            <div class="city-popup-panel" id="cityPopupPanel">
+            <div class="city-popup-panel" id="cityPopupPanel" style="display: none;">
                 <div class="city-popup-title">
                     <div>
                         <span id="popupCityName">Tokyo</span>
@@ -597,7 +652,7 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    📈 Visualization 1: Moving Averages Trend (<span id="chartCityLabel">Tokyo</span>)
+                    📈 Visualization 1: Moving Averages Trend (<span id="chartCityLabel">Select a City</span>)
                 </div>
                 <div class="filter-group" style="margin-bottom: 0;">
                     <div class="pill active" onclick="setChartDays(7, this)">7D</div>
@@ -697,12 +752,23 @@
         let markers = {};
         let movingChart = null;
         let hourlyChart = null;
-        let currentCountry = 'ALL';
-        let currentCity = 'Tokyo';
+        let currentCountry = '';
+        let currentCity = '';
         let currentDays = 30;
         let currentAnomalyFilter = 'all';
         let rawAnomalies = [];
         let allCitiesData = [];
+        let isDarkMode = true;
+
+        function toggleTheme() {
+            isDarkMode = !isDarkMode;
+            document.body.classList.toggle('light-mode', !isDarkMode);
+            const btn = document.getElementById('themeToggleBtn');
+            btn.innerHTML = isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode';
+            
+            if (movingChart) loadCityChartData();
+            if (currentCity) loadCityDetails();
+        }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -714,8 +780,6 @@
         async function initDashboard() {
             initMap();
             await loadSummaryData();
-            await loadCityDetails();
-            await loadCityChartData();
             await loadAnomaliesData();
             await loadRawPreviewData();
             await loadRegionalData();
@@ -730,7 +794,6 @@
                 zoomControl: true
             });
 
-            // Reliable OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '&copy; OpenStreetMap contributors'
@@ -751,7 +814,7 @@
                 document.getElementById('kpiPrecip').innerText = summary.total_precip + ' mm';
 
                 allCitiesData = summary.city_coords;
-                updateCityDropdownAndMap();
+                renderCityCards(allCitiesData);
 
             } catch (err) {
                 console.error("Error loading summary:", err);
@@ -760,44 +823,42 @@
 
         function onCountryChanged() {
             currentCountry = document.getElementById('countrySelect').value;
-            updateCityDropdownAndMap();
-            
-            // Select first city of that country
-            const filtered = currentCountry === 'ALL' ? allCitiesData : allCitiesData.filter(c => c.country === currentCountry);
-            if (filtered.length > 0) {
-                currentCity = filtered[0].city;
-                document.getElementById('citySelect').value = currentCity;
-                onCityChanged();
-            }
-        }
-
-        function updateCityDropdownAndMap() {
             const citySelect = document.getElementById('citySelect');
-            const cardsScroll = document.getElementById('cityCardsScroll');
-            citySelect.innerHTML = '';
-            cardsScroll.innerHTML = '';
+            
+            citySelect.disabled = false;
+            citySelect.innerHTML = '<option value="" disabled selected>-- Choose City --</option>';
 
-            // Filter cities by selected country
-            const filteredCities = currentCountry === 'ALL' ? allCitiesData : allCitiesData.filter(c => c.country === currentCountry);
-
-            // Remove existing markers from map
-            Object.keys(markers).forEach(k => {
-                map.removeLayer(markers[k]);
-            });
-            markers = {};
-
-            let tickerText = `[COUNTRY FILTER: ${currentCountry}] `;
+            const filteredCities = allCitiesData.filter(c => c.country === currentCountry);
 
             filteredCities.forEach(c => {
                 const opt = document.createElement('option');
                 opt.value = c.city;
-                opt.innerText = `${c.city} (${c.country})`;
-                if (c.city === currentCity) opt.selected = true;
+                opt.innerText = c.city;
                 citySelect.appendChild(opt);
+            });
 
+            // Update mini cards & map pins for selected country
+            renderCityCards(filteredCities);
+            showToast(`Country selected: ${currentCountry}. Choose a city to inspect.`);
+        }
+
+        function renderCityCards(cities) {
+            const cardsScroll = document.getElementById('cityCardsScroll');
+            cardsScroll.innerHTML = '';
+
+            // Remove previous map pins
+            Object.keys(markers).forEach(k => map.removeLayer(markers[k]));
+            markers = {};
+
+            let tickerText = `[MONITORING NODES] `;
+
+            cities.forEach(c => {
                 const card = document.createElement('div');
                 card.className = `city-mini-card ${c.city === currentCity ? 'active' : ''}`;
                 card.onclick = () => {
+                    currentCountry = c.country;
+                    document.getElementById('countrySelect').value = c.country;
+                    onCountryChanged();
                     currentCity = c.city;
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
@@ -811,7 +872,7 @@
 
                 tickerText += ` • ${c.city}, ${c.country}: ${c.latest_temp}°C`;
 
-                // Add map pins ONLY for filtered cities!
+                // Add map pins
                 const customIcon = L.divIcon({
                     className: 'custom-pin',
                     html: `<div class="radar-pin"></div>`,
@@ -825,6 +886,9 @@
                 });
 
                 marker.on('click', () => {
+                    currentCountry = c.country;
+                    document.getElementById('countrySelect').value = c.country;
+                    onCountryChanged();
                     currentCity = c.city;
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
@@ -835,6 +899,32 @@
 
             document.getElementById('tickerContent').innerText = tickerText;
             if (map) map.invalidateSize();
+        }
+
+        async function onCityChanged() {
+            currentCity = document.getElementById('citySelect').value;
+            if (!currentCity) return;
+
+            document.getElementById('cityPopupPanel').style.display = 'block';
+
+            document.querySelectorAll('.city-mini-card').forEach(card => {
+                if (card.querySelector('.city-name').innerText === currentCity) {
+                    card.classList.add('active');
+                } else {
+                    card.classList.remove('active');
+                }
+            });
+
+            await loadCityDetails();
+            await loadCityChartData();
+
+            const target = allCitiesData.find(c => c.city === currentCity);
+            if (target && map) {
+                map.flyTo([target.latitude, target.longitude], 6, { duration: 1.2 });
+                if (markers[currentCity]) {
+                    markers[currentCity].openTooltip();
+                }
+            }
         }
 
         async function loadCityDetails() {
@@ -860,8 +950,8 @@
                 const humidities = data.hourly_24h.map(h => h.humidity);
 
                 const hourlyOptions = {
-                    chart: { type: 'bar', height: 360, toolbar: { show: false }, background: 'transparent', foreColor: '#94a3b8' },
-                    colors: ['#38bdf8', '#00f0ff'],
+                    chart: { type: 'bar', height: 360, toolbar: { show: false }, background: 'transparent', foreColor: isDarkMode ? '#94a3b8' : '#64748b' },
+                    colors: ['#10b981', '#06b6d4'],
                     series: [
                         { name: 'Temperature (°C)', type: 'line', data: temps },
                         { name: 'Humidity (%)', type: 'bar', data: humidities }
@@ -870,11 +960,11 @@
                     plotOptions: { bar: { columnWidth: '50%', borderRadius: 4 } },
                     xaxis: { categories: hours },
                     yaxis: [
-                        { title: { text: 'Temperature (°C)', style: { color: '#38bdf8' } } },
-                        { opposite: true, title: { text: 'Humidity (%)', style: { color: '#00f0ff' } } }
+                        { title: { text: 'Temperature (°C)', style: { color: '#10b981' } } },
+                        { opposite: true, title: { text: 'Humidity (%)', style: { color: '#06b6d4' } } }
                     ],
-                    grid: { borderColor: 'rgba(255, 255, 255, 0.08)' },
-                    tooltip: { theme: 'dark' }
+                    grid: { borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)' },
+                    tooltip: { theme: isDarkMode ? 'dark' : 'light' }
                 };
 
                 if (hourlyChart) hourlyChart.destroy();
@@ -886,30 +976,8 @@
             }
         }
 
-        async function onCityChanged() {
-            currentCity = document.getElementById('citySelect').value;
-            
-            document.querySelectorAll('.city-mini-card').forEach(card => {
-                if (card.querySelector('.city-name').innerText === currentCity) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
-            });
-
-            await loadCityDetails();
-            await loadCityChartData();
-
-            const target = allCitiesData.find(c => c.city === currentCity);
-            if (target && map) {
-                map.flyTo([target.latitude, target.longitude], 6, { duration: 1.2 });
-                if (markers[currentCity]) {
-                    markers[currentCity].openTooltip();
-                }
-            }
-        }
-
         async function loadCityChartData() {
+            if (!currentCity) return;
             const res = await fetch(`/api/daily?city=${currentCity}`);
             let data = await res.json();
 
@@ -928,20 +996,20 @@
                     height: 360,
                     toolbar: { show: true, tools: { download: true } },
                     background: 'transparent',
-                    foreColor: '#94a3b8'
+                    foreColor: isDarkMode ? '#94a3b8' : '#64748b'
                 },
                 stroke: { width: [3, 3, 3], curve: 'smooth', dashArray: [0, 0, 4] },
                 fill: {
                     type: 'gradient',
                     gradient: {
-                        shade: 'dark',
+                        shade: isDarkMode ? 'dark' : 'light',
                         type: 'vertical',
                         shadeIntensity: 0.5,
                         opacityFrom: 0.4,
                         opacityTo: 0.05
                     }
                 },
-                colors: ['#38bdf8', '#a855f7', '#ff3b5c'],
+                colors: ['#10b981', '#6366f1', '#ff3b5c'],
                 series: [
                     { name: 'Daily Avg Temp (°C)', data: avgTemps },
                     { name: '7-Day Moving Avg', data: ma7 },
@@ -949,8 +1017,8 @@
                 ],
                 xaxis: { categories: dates },
                 yaxis: { labels: { formatter: (val) => val ? val.toFixed(1) + ' °C' : '' } },
-                grid: { borderColor: 'rgba(255, 255, 255, 0.08)' },
-                tooltip: { theme: 'dark' }
+                grid: { borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)' },
+                tooltip: { theme: isDarkMode ? 'dark' : 'light' }
             };
 
             if (movingChart) movingChart.destroy();
@@ -988,7 +1056,7 @@
             const filtered = rawAnomalies.filter(a => a.city.toLowerCase().includes(query));
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="color: #94a3b8; text-align: center; padding: 20px;">No matching climate anomalies found.</div>';
+                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No matching climate anomalies found.</div>';
                 return;
             }
 
@@ -997,6 +1065,11 @@
                 const isHeat = item.anomaly_status === 'EXTREME HEATWAVE';
                 div.className = `anomaly-card ${isHeat ? 'heat' : 'cold'}`;
                 div.onclick = () => {
+                    currentCountry = item.country || '';
+                    if (currentCountry) {
+                        document.getElementById('countrySelect').value = currentCountry;
+                        onCountryChanged();
+                    }
                     currentCity = item.city;
                     document.getElementById('citySelect').value = item.city;
                     onCityChanged();
@@ -1004,8 +1077,8 @@
 
                 div.innerHTML = `
                     <div>
-                        <div style="font-weight: 800; font-size: 0.98rem;">${item.city} <span style="font-size: 0.78rem; color: #94a3b8;">(${item.date})</span></div>
-                        <div style="font-size: 0.82rem; color: #94a3b8;">Temp: ${item.temperature}°C | Baseline Mean: ${item.city_mean_temp.toFixed(1)}°C</div>
+                        <div style="font-weight: 800; font-size: 0.98rem;">${item.city} <span style="font-size: 0.78rem; color: var(--text-muted);">(${item.date})</span></div>
+                        <div style="font-size: 0.82rem; color: var(--text-muted);">Temp: ${item.temperature}°C | Baseline Mean: ${item.city_mean_temp.toFixed(1)}°C</div>
                     </div>
                     <div>
                         <span class="badge ${isHeat ? 'badge-heat' : 'badge-cold'}">${item.anomaly_status} (Z=${item.z_score})</span>
@@ -1030,6 +1103,9 @@
                 data.rows.forEach(r => {
                     const tr = document.createElement('tr');
                     tr.onclick = () => {
+                        currentCountry = r.country;
+                        document.getElementById('countrySelect').value = r.country;
+                        onCountryChanged();
                         currentCity = r.city;
                         document.getElementById('citySelect').value = r.city;
                         onCityChanged();
@@ -1039,7 +1115,7 @@
                         <td>${r.country}</td>
                         <td>${r.region}</td>
                         <td>${r.timestamp}</td>
-                        <td><span style="color: #38bdf8; font-weight: 700;">${r.temperature} °C</span></td>
+                        <td><span style="color: var(--primary); font-weight: 700;">${r.temperature} °C</span></td>
                         <td>${r.humidity} %</td>
                         <td>${r.wind_speed} km/h</td>
                         <td>${r.precipitation} mm</td>
@@ -1065,7 +1141,7 @@
                 tr.innerHTML = `
                     <td><strong>${r.region}</strong></td>
                     <td>${r.total_cities}</td>
-                    <td><span style="color: #38bdf8; font-weight: 800;">${r.region_avg_temp} °C</span></td>
+                    <td><span style="color: var(--primary); font-weight: 800;">${r.region_avg_temp} °C</span></td>
                     <td>${r.region_min_temp} °C / ${r.region_max_temp} °C</td>
                     <td>${r.region_avg_humidity} %</td>
                     <td>${r.region_total_precipitation} mm</td>
