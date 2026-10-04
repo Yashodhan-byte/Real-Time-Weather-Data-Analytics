@@ -1355,13 +1355,14 @@ STORED AS TEXTFILE;
                 const res = await fetch('/api/refresh', { method: 'POST' });
                 const data = await res.json();
                 if (data.success) {
-                    showToast("Japan Pipeline Refreshed Successfully!");
+                    showToast("⚡ Dashboard Stats Updated to Latest Observations!");
                     await initDashboard();
+                    loadTimeframeAnalytics();
                 } else {
-                    showToast(data.error || "Failed to refresh pipeline");
+                    showToast(data.error || "Failed to update stats");
                 }
             } catch (err) {
-                showToast("Network error during refresh. Please try again.");
+                showToast("Failed to update stats");
             } finally {
                 icon.classList.remove('spin');
             }

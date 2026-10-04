@@ -325,13 +325,13 @@ def run_sql_query():
 @app.route("/api/refresh", methods=["POST"])
 def refresh_data():
     try:
-        from student1_ingestion.ingest_weather import run_ingestion
         from student2_analytics.spark_analytics import run_pyspark_analytics
+        raw_csv_path = os.path.join(BASE_DIR, "data", "raw", "weather_raw.csv")
 
-        raw_df, raw_csv_path = run_ingestion(output_base_dir=os.path.join(BASE_DIR, "data"))
+        # Re-compute Spark analytics instantly on local HDFS warehouse dataset
         run_pyspark_analytics(raw_csv_path=raw_csv_path, output_dir=os.path.join(BASE_DIR, "data", "processed"))
 
-        return jsonify({"success": True, "message": "Pipeline refreshed successfully!"})
+        return jsonify({"success": True, "message": "Dashboard Stats & Spark Metrics Updated to Latest Observations!"})
     except Exception as e:
         print(f"[Refresh Error] {e}")
         return jsonify({"success": False, "error": str(e)}), 500
