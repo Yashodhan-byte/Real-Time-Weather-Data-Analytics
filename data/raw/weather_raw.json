@@ -2,7 +2,7 @@
   "Tokyo": {
     "latitude": 35.7,
     "longitude": 139.625,
-    "generationtime_ms": 60.520172119140625,
+    "generationtime_ms": 83.42504501342773,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -4785,7 +4785,7 @@
   "Yokohama": {
     "latitude": 35.45,
     "longitude": 139.625,
-    "generationtime_ms": 3.1538009643554688,
+    "generationtime_ms": 5.495786666870117,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -9568,7 +9568,7 @@
   "Chiba": {
     "latitude": 35.6,
     "longitude": 140.125,
-    "generationtime_ms": 0.7305145263671875,
+    "generationtime_ms": 0.6558895111083984,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -14351,7 +14351,7 @@
   "Osaka": {
     "latitude": 34.7,
     "longitude": 135.5,
-    "generationtime_ms": 1.2600421905517578,
+    "generationtime_ms": 0.9162425994873047,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -19134,7 +19134,7 @@
   "Kyoto": {
     "latitude": 35.0,
     "longitude": 135.75,
-    "generationtime_ms": 0.6262063980102539,
+    "generationtime_ms": 4.195451736450195,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -23917,7 +23917,7 @@
   "Kobe": {
     "latitude": 34.7,
     "longitude": 135.1875,
-    "generationtime_ms": 0.6260871887207031,
+    "generationtime_ms": 0.561833381652832,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -28700,7 +28700,7 @@
   "Sapporo": {
     "latitude": 43.057995,
     "longitude": 141.42857,
-    "generationtime_ms": 11.65163516998291,
+    "generationtime_ms": 20.8204984664917,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -33483,7 +33483,7 @@
   "Asahikawa": {
     "latitude": 43.760983,
     "longitude": 142.3414,
-    "generationtime_ms": 9.597063064575195,
+    "generationtime_ms": 12.8709077835083,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -38266,7 +38266,7 @@
   "Hakodate": {
     "latitude": 41.75,
     "longitude": 140.75,
-    "generationtime_ms": 40.541887283325195,
+    "generationtime_ms": 172.52874374389648,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -43049,7 +43049,7 @@
   "Sendai": {
     "latitude": 38.25,
     "longitude": 140.875,
-    "generationtime_ms": 14.440655708312988,
+    "generationtime_ms": 80.17897605895996,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -47832,7 +47832,7 @@
   "Aomori": {
     "latitude": 40.8,
     "longitude": 140.75,
-    "generationtime_ms": 0.5928277969360352,
+    "generationtime_ms": 0.8413791656494141,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -52615,7 +52615,7 @@
   "Akita": {
     "latitude": 39.7,
     "longitude": 140.125,
-    "generationtime_ms": 0.7207393646240234,
+    "generationtime_ms": 2.6761293411254883,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -57398,7 +57398,7 @@
   "Nagoya": {
     "latitude": 35.2,
     "longitude": 136.9375,
-    "generationtime_ms": 0.996708869934082,
+    "generationtime_ms": 0.6388425827026367,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -62181,7 +62181,7 @@
   "Niigata": {
     "latitude": 37.9,
     "longitude": 139.0625,
-    "generationtime_ms": 0.6731748580932617,
+    "generationtime_ms": 0.922083854675293,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -66964,7 +66964,7 @@
   "Kanazawa": {
     "latitude": 36.55,
     "longitude": 136.625,
-    "generationtime_ms": 0.8020401000976562,
+    "generationtime_ms": 1.0676383972167969,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -71747,7 +71747,7 @@
   "Hiroshima": {
     "latitude": 34.4,
     "longitude": 132.4375,
-    "generationtime_ms": 0.6197690963745117,
+    "generationtime_ms": 1.2112855911254883,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -76530,7 +76530,7 @@
   "Okayama": {
     "latitude": 34.65,
     "longitude": 133.9375,
-    "generationtime_ms": 1.1414289474487305,
+    "generationtime_ms": 2.619504928588867,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -81313,7 +81313,7 @@
   "Matsuyama": {
     "latitude": 33.85,
     "longitude": 132.75,
-    "generationtime_ms": 1.8379688262939453,
+    "generationtime_ms": 6.118893623352051,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -86096,7 +86096,7 @@
   "Takamatsu": {
     "latitude": 34.35,
     "longitude": 134.0625,
-    "generationtime_ms": 0.3935098648071289,
+    "generationtime_ms": 0.5675554275512695,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -90879,7 +90879,7 @@
   "Fukuoka": {
     "latitude": 33.6,
     "longitude": 130.375,
-    "generationtime_ms": 7.45081901550293,
+    "generationtime_ms": 6.274104118347168,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -95662,7 +95662,7 @@
   "Kagoshima": {
     "latitude": 31.599998,
     "longitude": 130.5625,
-    "generationtime_ms": 28.046488761901855,
+    "generationtime_ms": 31.906485557556152,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",
@@ -100445,7 +100445,7 @@
   "Naha": {
     "latitude": 26.18629,
     "longitude": 127.69737,
-    "generationtime_ms": 15.064716339111328,
+    "generationtime_ms": 41.94045066833496,
     "utc_offset_seconds": 0,
     "timezone": "GMT",
     "timezone_abbreviation": "GMT",

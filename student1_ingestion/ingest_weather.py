@@ -132,7 +132,13 @@ def run_ingestion(output_base_dir="data"):
         json.dump(raw_responses, f, indent=2)
     
     raw_csv_path = os.path.join(raw_dir, "weather_raw.csv")
-    df.to_csv(raw_csv_path, index=False)
+    tmp_csv_path = os.path.join(raw_dir, "weather_raw.csv.tmp")
+    df.to_csv(tmp_csv_path, index=False)
+    try:
+        os.replace(tmp_csv_path, raw_csv_path)
+    except Exception:
+        df.to_csv(raw_csv_path, index=False)
+        
     print(f"[Storage] Saved raw JSON and CSV dataset ({len(df)} records for {len(CITIES)} cities) to: {raw_csv_path}")
 
     return df, raw_csv_path

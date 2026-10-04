@@ -3,6 +3,14 @@ import sys
 import pandas as pd
 import numpy as np
 
+def save_atomic_csv(df, target_path):
+    tmp_path = target_path + ".tmp"
+    df.to_csv(tmp_path, index=False)
+    try:
+        os.replace(tmp_path, target_path)
+    except Exception:
+        df.to_csv(target_path, index=False)
+
 def run_pyspark_analytics(raw_csv_path="data/raw/weather_raw.csv", output_dir="data/processed"):
     """
     Execute Spark SQL / PySpark Analytics Pipeline:
@@ -148,9 +156,9 @@ def run_pyspark_analytics(raw_csv_path="data/raw/weather_raw.csv", output_dir="d
         ).reset_index()
 
         # Save processed outputs
-        daily_pd.to_csv(os.path.join(output_dir, "daily_analytics.csv"), index=False)
-        anomaly_pd.to_csv(os.path.join(output_dir, "anomaly_analytics.csv"), index=False)
-        regional_pd.to_csv(os.path.join(output_dir, "regional_analytics.csv"), index=False)
+        save_atomic_csv(daily_pd, os.path.join(output_dir, "daily_analytics.csv"))
+        save_atomic_csv(anomaly_pd, os.path.join(output_dir, "anomaly_analytics.csv"))
+        save_atomic_csv(regional_pd, os.path.join(output_dir, "regional_analytics.csv"))
 
         print("[Fallback Analytics Engine] Successfully computed analytics and exported CSV output datasets.")
 

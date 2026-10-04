@@ -1357,9 +1357,11 @@ STORED AS TEXTFILE;
                 if (data.success) {
                     showToast("Japan Pipeline Refreshed Successfully!");
                     await initDashboard();
+                } else {
+                    showToast(data.error || "Failed to refresh pipeline");
                 }
             } catch (err) {
-                showToast("Failed to refresh pipeline");
+                showToast("Network error during refresh. Please try again.");
             } finally {
                 icon.classList.remove('spin');
             }
