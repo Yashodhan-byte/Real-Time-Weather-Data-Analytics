@@ -278,31 +278,46 @@ def run_sql_query():
     daily_df = get_processed_file("daily_analytics.csv")
     anomaly_df = get_processed_file("anomaly_analytics.csv")
     
-    if raw_df is None or daily_df is None:
+    if raw_df is None or daily_df is None or anomaly_df is None:
         return jsonify({"error": "Dataset missing"}), 404
         
     try:
         if query_type == "top_hottest":
-            res = raw_df.groupby("city")["temperature"].agg(["mean", "max", "min"]).reset_index()
+            group_keys = ["city"]
+            if "prefecture" in raw_df.columns:
+                group_keys.append("prefecture")
+            res = raw_df.groupby(group_keys)["temperature"].agg(["mean", "max", "min"]).reset_index()
             res = res.sort_values("mean", ascending=False).head(5)
-            res.columns = ["City", "Mean Temp (°C)", "Max Temp (°C)", "Min Temp (°C)"]
-            explanation = "SELECT city, AVG(temperature), MAX(temperature), MIN(temperature) FROM raw_weather GROUP BY city ORDER BY mean DESC LIMIT 5"
+            if "prefecture" in res.columns:
+                res.columns = ["City Station", "Prefecture", "Mean Temp (°C)", "Max Temp (°C)", "Min Temp (°C)"]
+            else:
+                res.columns = ["City Station", "Mean Temp (°C)", "Max Temp (°C)", "Min Temp (°C)"]
+            explanation = "SELECT city, prefecture, AVG(temperature), MAX(temperature), MIN(temperature) FROM raw_weather GROUP BY city, prefecture ORDER BY mean DESC LIMIT 5"
         elif query_type == "zscore_critical":
-            res = anomaly_df[abs(anomaly_df["z_score"]) > 2.2][["city", "country", "date", "recorded_temp", "city_mean_temp", "z_score", "anomaly_status"]]
-            res = res.sort_values("z_score", ascending=False).head(10)
-            res.columns = ["City", "Country", "Date", "Recorded Temp", "City Mean", "Z-Score", "Status"]
-            explanation = "SELECT city, country, date, recorded_temp, z_score, anomaly_status FROM anomaly_analytics WHERE ABS(z_score) > 2.2 ORDER BY z_score DESC LIMIT 10"
+            cols = ["city", "date", "temperature", "city_mean_temp", "z_score", "anomaly_status"]
+            if "prefecture" in anomaly_df.columns:
+                cols.insert(1, "prefecture")
+            
+            res = anomaly_df[anomaly_df["z_score"].abs() > 2.0][cols]
+            res["abs_z"] = res["z_score"].abs()
+            res = res.sort_values("abs_z", ascending=False).head(10).drop(columns=["abs_z"])
+            
+            if "prefecture" in res.columns:
+                res.columns = ["City Station", "Prefecture", "Date", "Recorded Temp (°C)", "City Mean (°C)", "Z-Score", "Anomaly Status"]
+            else:
+                res.columns = ["City Station", "Date", "Recorded Temp (°C)", "City Mean (°C)", "Z-Score", "Anomaly Status"]
+            explanation = "SELECT city, prefecture, date, temperature, city_mean_temp, z_score, anomaly_status FROM anomaly_analytics WHERE ABS(z_score) > 2.0 ORDER BY ABS(z_score) DESC LIMIT 10"
         elif query_type == "regional_summary":
             res = daily_df.groupby("region").agg(
                 cities=("city", "nunique"),
                 avg_temp=("avg_temp", "mean"),
                 total_rain=("total_precipitation", "sum")
             ).reset_index()
-            res.columns = ["Region", "Station Count", "Mean Temp (°C)", "Total Rain (mm)"]
+            res.columns = ["Japanese Region", "Station Count", "Mean Temp (°C)", "Total Rain (mm)"]
             explanation = "SELECT region, COUNT(DISTINCT city), AVG(avg_temp), SUM(total_precipitation) FROM daily_analytics GROUP BY region"
         elif query_type == "diurnal_variance":
             res = raw_df.groupby("hour")["temperature"].agg(["mean", "min", "max"]).reset_index()
-            res.columns = ["Hour of Day", "Avg Temp (°C)", "Min Temp (°C)", "Max Temp (°C)"]
+            res.columns = ["Hour of Day (24h)", "Avg Temp (°C)", "Min Temp (°C)", "Max Temp (°C)"]
             explanation = "SELECT hour, AVG(temperature), MIN(temperature), MAX(temperature) FROM raw_weather GROUP BY hour ORDER BY hour ASC"
         else:
             return jsonify({"error": "Unknown query type"}), 400
@@ -320,6 +335,7 @@ def run_sql_query():
             "execution_time_ms": 12.4
         })
     except Exception as e:
+        print(f"[Query Error] {e}")
         return jsonify({"error": str(e)}), 500
 
 @app.route("/api/refresh", methods=["POST"])
