@@ -36,7 +36,6 @@
             --shadow-color: rgba(0, 0, 0, 0.4);
         }
 
-        /* Light Mode Styles */
         body.light-mode {
             --bg-body: #f1f5f9;
             --card-bg: rgba(255, 255, 255, 0.9);
@@ -173,7 +172,6 @@
             flex-wrap: wrap;
         }
 
-        /* Mode Switch Toggle Button */
         .theme-toggle-btn {
             background: var(--card-bg);
             border: 1px solid var(--border-color);
@@ -427,7 +425,24 @@
         .mini-stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; }
         .mini-stat-val { font-size: 1.2rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
 
-        /* Anomaly list & pills */
+        /* Multi-Section Anomaly Dashboard Elements */
+        .anomaly-sub-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .anomaly-stat-card {
+            background: var(--input-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 14px;
+            padding: 12px;
+            text-align: center;
+        }
+        .anomaly-stat-num { font-size: 1.5rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+        .anomaly-stat-desc { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
+
         .search-input {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -457,7 +472,7 @@
             border-color: transparent;
         }
 
-        .anomaly-scroll { max-height: 350px; overflow-y: auto; padding-right: 6px; }
+        .anomaly-scroll { max-height: 380px; overflow-y: auto; padding-right: 6px; }
         .anomaly-card {
             background: var(--input-bg);
             border: 1px solid var(--border-color);
@@ -467,7 +482,13 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
+            transition: all 0.25s ease;
         }
+        .anomaly-card:hover {
+            transform: translateX(4px);
+            border-color: var(--primary);
+        }
+
         .anomaly-card.heat { border-left: 5px solid var(--heat-red); }
         .anomaly-card.cold { border-left: 5px solid var(--cold-blue); }
 
@@ -534,7 +555,7 @@
             </button>
 
             <!-- Step 1: Country Selection -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">1. Select Country:</label>
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">1. Country:</label>
             <select id="countrySelect" onchange="onCountryChanged()">
                 <option value="" disabled selected>-- Choose Country --</option>
                 <option value="Japan">Japan 🇯🇵</option>
@@ -547,7 +568,7 @@
             </select>
 
             <!-- Step 2: City Selection -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">2. Select City:</label>
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">2. City:</label>
             <select id="citySelect" onchange="onCityChanged()" disabled>
                 <option value="">-- Choose Country First --</option>
             </select>
@@ -590,7 +611,7 @@
     <div class="grid-2col">
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">📡 Station Tactical Radar (Select Country & City Above)</div>
+                <div class="panel-title">📡 Station Tactical Radar (Filtered by Selected City)</div>
                 <div style="font-size: 0.85rem; color: var(--text-muted);">Click pin to view city analytics</div>
             </div>
             <div id="map-container">
@@ -631,16 +652,37 @@
             </div>
         </div>
 
+        <!-- Enhanced Multi-Section Extreme Anomalies Panel -->
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">⚡ Extreme Weather Anomalies</div>
-                <input type="text" class="search-input" id="searchAnomaly" placeholder="Search city..." onkeyup="filterAnomaliesUI()">
+                <div class="panel-title">⚡ Extreme Weather Anomalies Intelligence</div>
+                <input type="text" class="search-input" id="searchAnomaly" placeholder="Filter..." onkeyup="filterAnomaliesUI()">
             </div>
+
+            <!-- Section 1: Anomaly Summary Metrics Cards -->
+            <div class="anomaly-sub-grid">
+                <div class="anomaly-stat-card">
+                    <div class="anomaly-stat-num" id="statHeatwaveCount" style="color: var(--heat-red);">--</div>
+                    <div class="anomaly-stat-desc">🔥 Heatwaves</div>
+                </div>
+                <div class="anomaly-stat-card">
+                    <div class="anomaly-stat-num" id="statColdSnapCount" style="color: var(--cold-blue);">--</div>
+                    <div class="anomaly-stat-desc">❄️ Cold Snaps</div>
+                </div>
+            </div>
+
+            <!-- Section 2: Anomaly Category Filter Pills -->
             <div class="filter-group">
                 <div class="pill active" onclick="setAnomalyFilter('all', this)">All Anomalies</div>
                 <div class="pill" onclick="setAnomalyFilter('heatwave', this)">🔥 Heatwaves</div>
                 <div class="pill" onclick="setAnomalyFilter('coldsnap', this)">❄️ Cold Snaps</div>
             </div>
+
+            <!-- Section 3: Anomaly Feed Filtered strictly by Selected City! -->
+            <div style="font-size: 0.82rem; color: var(--primary); font-weight: 700; margin-bottom: 8px;" id="anomalyCityFocusLabel">
+                Showing Anomalies for: All Cities
+            </div>
+
             <div class="anomaly-scroll" id="anomalyList">
                 <div style="color: var(--text-muted); text-align: center; padding: 20px;">Loading live anomaly feed...</div>
             </div>
@@ -837,7 +879,6 @@
                 citySelect.appendChild(opt);
             });
 
-            // Update mini cards & map pins for selected country
             renderCityCards(filteredCities);
             showToast(`Country selected: ${currentCountry}. Choose a city to inspect.`);
         }
@@ -846,7 +887,6 @@
             const cardsScroll = document.getElementById('cityCardsScroll');
             cardsScroll.innerHTML = '';
 
-            // Remove previous map pins
             Object.keys(markers).forEach(k => map.removeLayer(markers[k]));
             markers = {};
 
@@ -872,7 +912,6 @@
 
                 tickerText += ` • ${c.city}, ${c.country}: ${c.latest_temp}°C`;
 
-                // Add map pins
                 const customIcon = L.divIcon({
                     className: 'custom-pin',
                     html: `<div class="radar-pin"></div>`,
@@ -917,6 +956,7 @@
 
             await loadCityDetails();
             await loadCityChartData();
+            filterAnomaliesUI(); // Filter anomalies strictly by selected city!
 
             const target = allCitiesData.find(c => c.city === currentCity);
             if (target && map) {
@@ -944,7 +984,6 @@
                 document.getElementById('popupRange').innerText = `${data.stats.min_temp} - ${data.stats.max_temp} °C`;
                 document.getElementById('chartCityLabel').innerText = data.city;
 
-                // Render 24-Hour Profile Chart (Visualization 2)
                 const hours = data.hourly_24h.map(h => `${h.hour}:00`);
                 const temps = data.hourly_24h.map(h => h.temperature);
                 const humidities = data.hourly_24h.map(h => h.humidity);
@@ -1053,10 +1092,25 @@
             const container = document.getElementById('anomalyList');
             container.innerHTML = '';
 
-            const filtered = rawAnomalies.filter(a => a.city.toLowerCase().includes(query));
+            // Filter by search query AND strictly by selected city if chosen!
+            let filtered = rawAnomalies.filter(a => a.city.toLowerCase().includes(query));
+
+            if (currentCity) {
+                filtered = filtered.filter(a => a.city.toLowerCase() === currentCity.toLowerCase());
+                document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
+            } else {
+                document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: All Cities`;
+            }
+
+            // Update sub-stat cards
+            const heatwaves = filtered.filter(a => a.anomaly_status === 'EXTREME HEATWAVE').length;
+            const coldsnaps = filtered.filter(a => a.anomaly_status === 'EXTREME COLD SNAP').length;
+
+            document.getElementById('statHeatwaveCount').innerText = heatwaves;
+            document.getElementById('statColdSnapCount').innerText = coldsnaps;
 
             if (filtered.length === 0) {
-                container.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">No matching climate anomalies found.</div>';
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 25px;">No extreme climate anomalies flagged for ${currentCity || 'this filter'}.</div>`;
                 return;
             }
 
@@ -1064,16 +1118,6 @@
                 const div = document.createElement('div');
                 const isHeat = item.anomaly_status === 'EXTREME HEATWAVE';
                 div.className = `anomaly-card ${isHeat ? 'heat' : 'cold'}`;
-                div.onclick = () => {
-                    currentCountry = item.country || '';
-                    if (currentCountry) {
-                        document.getElementById('countrySelect').value = currentCountry;
-                        onCountryChanged();
-                    }
-                    currentCity = item.city;
-                    document.getElementById('citySelect').value = item.city;
-                    onCityChanged();
-                };
 
                 div.innerHTML = `
                     <div>
