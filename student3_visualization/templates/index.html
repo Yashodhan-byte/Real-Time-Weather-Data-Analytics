@@ -1037,6 +1037,7 @@ STORED AS TEXTFILE;
         }
 
         function initMap() {
+            if (map !== null) return;
             map = L.map('map').setView([36.5, 138.0], 5); // Centered on Japan
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
@@ -1104,6 +1105,8 @@ STORED AS TEXTFILE;
         }
 
         function renderMapMarkers(cities) {
+            Object.values(markers).forEach(m => map.removeLayer(m));
+            markers = {};
             cities.forEach(c => {
                 const icon = L.divIcon({
                     className: 'radar-pin',
