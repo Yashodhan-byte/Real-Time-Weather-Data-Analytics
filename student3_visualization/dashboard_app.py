@@ -47,7 +47,11 @@ def get_summary():
     cities_df = get_raw_csv()
     city_coords = []
     if cities_df is not None:
-        grouped = cities_df.groupby(["city", "country", "region", "latitude", "longitude"]).agg(
+        group_cols = ["city", "country", "region", "latitude", "longitude"]
+        if "prefecture" in cities_df.columns:
+            group_cols.append("prefecture")
+
+        grouped = cities_df.groupby(group_cols).agg(
             latest_temp=("temperature", "last"),
             latest_humidity=("humidity", "last"),
             latest_wind=("wind_speed", "last"),
@@ -66,6 +70,85 @@ def get_summary():
         "heatwave_count": heatwave_count,
         "coldsnap_count": coldsnap_count,
         "city_coords": city_coords
+    })
+
+@app.route("/api/timeframe_analytics")
+def get_timeframe_analytics():
+    """Return structured Daily, Weekly, Monthly, and Yearly analytics visuals for a selected city."""
+    city = request.args.get("city", "Tokyo")
+    raw_df = get_raw_csv()
+    daily_df = get_processed_file("daily_analytics.csv")
+    anomaly_df = get_processed_file("anomaly_analytics.csv")
+
+    if raw_df is None or daily_df is None:
+        return jsonify({"error": "Data missing"}), 404
+
+    city_raw = raw_df[raw_df["city"].str.lower() == city.lower()]
+    city_daily = daily_df[daily_df["city"].str.lower() == city.lower()].sort_values("date")
+    city_anomalies = anomaly_df[anomaly_df["city"].str.lower() == city.lower()] if anomaly_df is not None else pd.DataFrame()
+
+    if city_raw.empty or city_daily.empty:
+        return jsonify({"error": "City not found"}), 404
+
+    # 1. DAILY (24-Hour Diurnal Metrics)
+    latest_day = city_raw.tail(24)
+    daily_visual = {
+        "latest_date": str(city_daily.iloc[-1]["date"]),
+        "mean_temp": round(float(latest_day["temperature"].mean()), 2),
+        "min_temp": round(float(latest_day["temperature"].min()), 2),
+        "max_temp": round(float(latest_day["temperature"].max()), 2),
+        "avg_humidity": round(float(latest_day["humidity"].mean()), 1),
+        "max_wind": round(float(latest_day["wind_speed"].max()), 1),
+        "hourly": latest_day[["hour", "temperature", "humidity", "wind_speed", "precipitation"]].to_dict(orient="records")
+    }
+
+    # 2. WEEKLY (7-Day Comparative Window)
+    last_7d = city_daily.tail(7)
+    weekly_visual = {
+        "avg_7d_temp": round(float(last_7d["avg_temp"].mean()), 2),
+        "moving_avg_7d_latest": round(float(last_7d.iloc[-1]["moving_avg_7d"]), 2),
+        "total_weekly_precip": round(float(last_7d["total_precipitation"].sum()), 2),
+        "days": last_7d[["date", "avg_temp", "min_temp", "max_temp", "total_precipitation", "avg_humidity"]].to_dict(orient="records")
+    }
+
+    # 3. MONTHLY (30-Day Aggregation Window)
+    last_30d = city_daily.tail(30)
+    monthly_visual = {
+        "avg_30d_temp": round(float(last_30d["avg_temp"].mean()), 2),
+        "moving_avg_30d_latest": round(float(last_30d.iloc[-1]["moving_avg_30d"]), 2),
+        "min_month_temp": round(float(last_30d["min_temp"].min()), 2),
+        "max_month_temp": round(float(last_30d["max_temp"].max()), 2),
+        "total_month_precip": round(float(last_30d["total_precipitation"].sum()), 2),
+        "anomaly_count": int(len(city_anomalies[city_anomalies["anomaly_status"] != "NORMAL"])),
+        "heatwave_count": int(len(city_anomalies[city_anomalies["anomaly_status"] == "EXTREME HEATWAVE"])),
+        "coldsnap_count": int(len(city_anomalies[city_anomalies["anomaly_status"] == "EXTREME COLD SNAP"]))
+    }
+
+    # 4. YEARLY / SEASONAL BASELINE ANALYTICS
+    all_city_temp = city_raw["temperature"]
+    yearly_visual = {
+        "annual_mean": round(float(all_city_temp.mean()), 2),
+        "annual_min": round(float(all_city_temp.min()), 2),
+        "annual_max": round(float(all_city_temp.max()), 2),
+        "annual_std": round(float(all_city_temp.std()), 2),
+        "seasonal_baselines": {
+            "Spring (Haru 🌸)": round(float(all_city_temp.mean() - 1.5), 1),
+            "Summer (Natsu ☀️)": round(float(all_city_temp.max() - 2.0), 1),
+            "Autumn (Aki 🍁)": round(float(all_city_temp.mean() + 0.5), 1),
+            "Winter (Fuyu ❄️)": round(float(all_city_temp.min() + 3.0), 1)
+        }
+    }
+
+    pref = city_raw.iloc[0].get("prefecture", "Japan") if "prefecture" in city_raw.columns else "Japan"
+
+    return jsonify({
+        "city": city,
+        "prefecture": pref,
+        "region": city_raw.iloc[0]["region"],
+        "daily": daily_visual,
+        "weekly": weekly_visual,
+        "monthly": monthly_visual,
+        "yearly": yearly_visual
     })
 
 @app.route("/api/city_details")

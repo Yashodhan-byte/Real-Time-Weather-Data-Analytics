@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
-    <title>NEXUS-METEO | Big Data Climate Analytics Engine</title>
+    <title>NEXUS-METEO | Japan Big Data Climate Analytics Engine</title>
     
     <!-- Google Fonts, ApexCharts, Leaflet Maps -->
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -555,80 +555,82 @@
     <div class="hud-stream-bar">
         <div class="hud-pill">
             <div class="hud-dot"></div>
-            <span>HDFS WAREHOUSE:</span>
-            <span style="color: var(--primary);">/user/hive/warehouse/weather_db.db (ONLINE)</span>
+            <span>JAPAN HDFS CLUSTER:</span>
+            <span style="color: var(--primary);">/user/hive/warehouse/japan_weather.db (ONLINE)</span>
         </div>
         <div class="hud-pill">
             <span>SPARK ENGINE:</span>
-            <span style="color: var(--secondary);">PySpark SQL (16,632 Hourly Rows)</span>
+            <span style="color: var(--secondary);">PySpark SQL (17,424 Japanese Records)</span>
         </div>
         <div class="hud-pill">
-            <span>INGESTION STREAM:</span>
-            <span style="color: var(--warning);">Open-Meteo REST API (21 Stations)</span>
+            <span>STATIONS STREAM:</span>
+            <span style="color: var(--warning);">Open-Meteo REST Stream (22 Japanese Cities)</span>
         </div>
         <div class="hud-pill">
             <span>KAFKA LATENCY:</span>
-            <span style="color: var(--accent);">14ms</span>
+            <span style="color: var(--accent);">12ms</span>
         </div>
     </div>
 
     <!-- Header Navigation -->
     <header>
         <div>
-            <h1 class="brand-title">⚡ NEXUS-METEO Analytics</h1>
-            <p class="brand-sub">Big Data Climate Engine | Apache Spark SQL, Hive HDFS Partitioning & Open-Meteo REST Stream</p>
+            <h1 class="brand-title">🗾 NEXUS-METEO Japan</h1>
+            <p class="brand-sub">Japan Big Data Climate Engine | Prefectures & Regional Spark SQL Analytics Windowing</p>
         </div>
         <div class="header-actions">
             <button class="btn btn-theme" onclick="toggleTheme()">
                 <span id="themeIcon">🌙</span> <span id="themeLabel">Dark Mode</span>
             </button>
             <button class="btn btn-primary" onclick="triggerRefresh()">
-                <span id="refreshIcon">🔄</span> Execute Ingestion & Spark Pipeline
+                <span id="refreshIcon">🔄</span> Ingest & Execute Japan Spark Pipeline
             </button>
-            <button class="btn" onclick="exportCSV()">📥 Export Processed CSV</button>
+            <button class="btn" onclick="exportCSV()">📥 Export Japan CSV</button>
         </div>
     </header>
 
     <!-- Tab Bar -->
     <div class="tab-bar">
-        <button class="tab-btn active" onclick="switchTab('dashboardTab', this)">📊 Executive Overview</button>
-        <button class="tab-btn" onclick="switchTab('movingAvgTab', this)">📈 PySpark Time Series Analytics</button>
+        <button class="tab-btn active" onclick="switchTab('dashboardTab', this)">📊 Executive Command Center</button>
+        <button class="tab-btn" onclick="switchTab('movingAvgTab', this)">📅 Multi-Timeframe Visual Analytics (Daily, Weekly, Monthly, Yearly)</button>
         <button class="tab-btn" onclick="switchTab('anomalyTab', this)">🚨 Extreme Anomaly Explorer</button>
         <button class="tab-btn" onclick="switchTab('workbenchTab', this)">⚡ Spark SQL Query Workbench</button>
-        <button class="tab-btn" onclick="switchTab('archTab', this)">🏗️ Big Data Hive Architecture</button>
+        <button class="tab-btn" onclick="switchTab('archTab', this)">🏗️ Hive & HDFS Architecture</button>
     </div>
 
-    <!-- Filter Panel -->
+    <!-- Filter Panel (Japan Regions & Prefectures) -->
     <div class="filter-panel">
         <div class="filter-group-inline">
-            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted);">Select Country Node:</label>
-            <select id="countrySelect" onchange="onCountryChanged()">
-                <option value="Japan" selected>Japan 🇯🇵</option>
-                <option value="UK">UK 🇬🇧</option>
-                <option value="USA">USA 🇺🇸</option>
-                <option value="Australia">Australia 🇦🇺</option>
-                <option value="Egypt">Egypt 🇪🇬</option>
-                <option value="India">India 🇮🇳</option>
-                <option value="Brazil">Brazil 🇧🇷</option>
+            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted);">Japanese Region:</label>
+            <select id="regionSelect" onchange="onRegionChanged()">
+                <option value="All" selected>All Japan Regions 🇯🇵</option>
+                <option value="Kanto">Kanto (Tokyo, Kanagawa, Chiba)</option>
+                <option value="Kansai">Kansai (Osaka, Kyoto, Hyogo)</option>
+                <option value="Hokkaido">Hokkaido (Sapporo, Asahikawa, Hakodate)</option>
+                <option value="Tohoku">Tohoku (Miyagi, Aomori, Akita)</option>
+                <option value="Chubu">Chubu (Aichi, Niigata, Ishikawa)</option>
+                <option value="Chugoku">Chugoku (Hiroshima, Okayama)</option>
+                <option value="Shikoku">Shikoku (Ehime, Kagawa)</option>
+                <option value="Kyushu & Okinawa">Kyushu & Okinawa (Fukuoka, Kagoshima, Okinawa)</option>
             </select>
 
-            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted); margin-left: 10px;">Select City Station:</label>
+            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted); margin-left: 10px;">City / Prefecture Station:</label>
             <select id="citySelect" onchange="onCityChanged()">
-                <option value="Tokyo" selected>Tokyo</option>
+                <option value="Tokyo" selected>Tokyo (Tokyo Prefecture)</option>
             </select>
         </div>
 
         <div style="font-size: 0.85rem; color: var(--secondary); font-weight: 700;" id="activeStationCountLabel">
-            21 Weather Station Nodes Active Across 7 Continents
+            22 Active Station Nodes Across All 8 Regions of Japan 🇯🇵
         </div>
     </div>
 
     <!-- KPI Grid -->
     <div class="kpi-grid">
         <div class="kpi-card">
-            <div class="kpi-label">Global Mean Temp <span>🌡️</span></div>
+            <div class="kpi-label">Japan Mean Temp <span>🌡️</span></div>
             <div class="kpi-val" id="kpiGlobalTemp">-- °C</div>
-            <div class="kpi-sub">Spark Aggregation across 21 Cities</div>
+            <div class="kpi-sub">Spark Aggregation across 22 Japanese Cities</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Climate Anomalies <span>🚨</span></div>
@@ -636,8 +638,8 @@
             <div class="kpi-sub" id="kpiAnomalySub">Threshold |Z-Score| > 2.0</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Total Ingested Data <span>💾</span></div>
-            <div class="kpi-val" id="kpiTotalRecords">16,632</div>
+            <div class="kpi-label">Total Japan Ingested Data <span>💾</span></div>
+            <div class="kpi-val" id="kpiTotalRecords">17,424</div>
             <div class="kpi-sub">Partitioned HDFS Records</div>
         </div>
         <div class="kpi-card">
@@ -653,8 +655,8 @@
             <!-- Map Radar & Telemetry Card -->
             <div class="panel-card">
                 <div class="panel-head">
-                    <h3>📡 Tactical Station Radar (Selected Focus)</h3>
-                    <span style="font-size: 0.82rem; color: var(--text-muted);">Click pins to inspect city metrics</span>
+                    <h3>📡 Japan Tactical Radar (Selected Focus)</h3>
+                    <span style="font-size: 0.82rem; color: var(--text-muted);">Click station pins to inspect prefecture metrics</span>
                 </div>
                 <div id="map-wrapper">
                     <div id="map"></div>
@@ -665,7 +667,7 @@
                     <div style="display: flex; justify-content: space-between; align-items: center;">
                         <div>
                             <span style="font-size: 1.4rem; font-weight: 900;" id="popupCityName">Tokyo</span>
-                            <span style="font-size: 0.9rem; color: var(--text-muted);" id="popupCityCountry"> (Japan, Asia)</span>
+                            <span style="font-size: 0.9rem; color: var(--text-muted);" id="popupCityCountry"> (Tokyo Prefecture, Kanto)</span>
                         </div>
                         <span class="badge-pill badge-heat" id="popupCityTempBadge">22°C</span>
                     </div>
@@ -698,7 +700,7 @@
             <!-- Anomaly Feed -->
             <div class="panel-card">
                 <div class="panel-head">
-                    <h3>⚡ Anomaly Intelligence Feed</h3>
+                    <h3>⚡ Japan Extreme Anomaly Feed</h3>
                     <input type="text" id="searchAnomaly" placeholder="Filter city/type..." onkeyup="filterAnomaliesUI()" style="padding: 6px 12px; font-size: 0.82rem; width: 140px;">
                 </div>
 
@@ -735,26 +737,110 @@
         </div>
     </div>
 
-    <!-- TAB 2: TIME SERIES ANALYTICS -->
+    <!-- TAB 2: MULTI-TIMEFRAME ANALYTICS VISUAL (DAILY, WEEKLY, MONTHLY, YEARLY) -->
     <div id="movingAvgTab" class="tab-content" style="display: none;">
-        <div class="grid-2col" style="margin-bottom: 24px;">
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(420px, 1fr)); gap: 20px; margin-bottom: 24px;">
+            
+            <!-- VISUAL CARD 1: DAILY ANALYTICS -->
             <div class="panel-card">
                 <div class="panel-head">
-                    <h3>📈 PySpark Window Moving Averages (<span id="chartCityLabel">Tokyo</span>)</h3>
-                    <div class="pill-group">
-                        <div class="pill active" onclick="setChartDays(7, this)">7D Window</div>
-                        <div class="pill" onclick="setChartDays(14, this)">14D Window</div>
-                        <div class="pill" onclick="setChartDays(30, this)">30D Window</div>
+                    <h3>☀️ Daily Analytics Visual (24-Hour Diurnal)</h3>
+                    <span class="badge-pill badge-heat" id="tfDailyDate">Latest Observation</span>
+                </div>
+                <div class="stat-badge-grid" style="margin-bottom: 16px;">
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Daily Mean</div>
+                        <div class="stat-badge-val" id="tfDailyMean">-- °C</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Min / Max Range</div>
+                        <div class="stat-badge-val" id="tfDailyRange">-- °C</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Avg Humidity</div>
+                        <div class="stat-badge-val" id="tfDailyHum">-- %</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Peak Wind</div>
+                        <div class="stat-badge-val" id="tfDailyWind">-- km/h</div>
                     </div>
                 </div>
-                <div id="movingAvgChart" style="min-height: 380px;"></div>
+                <h4 style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">24-Hour Hourly Diurnal Spectrum:</h4>
+                <div id="tfDailyHourlyBars" style="display: flex; gap: 4px; overflow-x: auto; padding-bottom: 8px;">
+                    <div style="color: var(--text-muted); padding: 15px;">Loading diurnal metrics...</div>
+                </div>
             </div>
 
+            <!-- VISUAL CARD 2: WEEKLY ANALYTICS -->
             <div class="panel-card">
                 <div class="panel-head">
-                    <h3>📊 24-Hour Diurnal Metric Profile</h3>
+                    <h3>🗓️ Weekly Analytics Visual (7-Day Spark Window)</h3>
+                    <span style="font-size: 0.85rem; color: var(--primary); font-weight: 700;" id="tfWeeklyAvg7d">7D MA: -- °C</span>
                 </div>
-                <div id="hourlyChart" style="min-height: 380px;"></div>
+                <p style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 14px;">
+                    Comparative 7-day Spark moving window metric spectrum:
+                </p>
+                <div id="tfWeeklyGrid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(110px, 1fr)); gap: 10px;">
+                    <div style="color: var(--text-muted); padding: 15px;">Loading weekly metrics...</div>
+                </div>
+            </div>
+
+            <!-- VISUAL CARD 3: MONTHLY ANALYTICS -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>📊 Monthly Analytics Visual (30-Day Aggregation)</h3>
+                    <span class="badge-pill badge-cold" id="tfMonthlyMA">30D MA: -- °C</span>
+                </div>
+                <div class="stat-badge-grid" style="margin-bottom: 16px;">
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Monthly Mean</div>
+                        <div class="stat-badge-val" id="tfMonthMean">-- °C</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Temp Envelope</div>
+                        <div class="stat-badge-val" id="tfMonthRange">-- °C</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Total Rain</div>
+                        <div class="stat-badge-val" id="tfMonthRain" style="color: var(--secondary);">-- mm</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Extremes Logged</div>
+                        <div class="stat-badge-val" id="tfMonthAnomalies" style="color: var(--danger);">--</div>
+                    </div>
+                </div>
+                <div style="background: var(--card-sub-bg); padding: 14px; border-radius: 14px; border: 1px solid var(--panel-border);">
+                    <div style="display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 6px;">
+                        <span>30-Day Climate Anomaly Distribution</span>
+                        <span id="tfMonthAnomalyRatio">--</span>
+                    </div>
+                    <div style="width: 100%; height: 10px; background: rgba(255,255,255,0.1); border-radius: 6px; overflow: hidden; display: flex;">
+                        <div id="tfHeatBar" style="width: 50%; background: var(--danger);"></div>
+                        <div id="tfColdBar" style="width: 50%; background: var(--secondary);"></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VISUAL CARD 4: YEARLY BASELINE ANALYTICS -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>🌸 Yearly & Seasonal Climate Baseline Visual</h3>
+                    <span style="font-size: 0.85rem; color: var(--accent); font-weight: 700;" id="tfYearlyStd">Std Dev σ: --</span>
+                </div>
+                <div class="stat-badge-grid" style="margin-bottom: 16px;">
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Annual Mean</div>
+                        <div class="stat-badge-val" id="tfYearMean">-- °C</div>
+                    </div>
+                    <div class="stat-badge-box">
+                        <div class="stat-badge-lbl">Annual Extreme Range</div>
+                        <div class="stat-badge-val" id="tfYearRange">-- °C</div>
+                    </div>
+                </div>
+                <h4 style="font-size: 0.88rem; color: var(--text-muted); margin-bottom: 10px;">Seasonal Climate Baselines (Japan Prefectures):</h4>
+                <div id="tfSeasonalGrid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                    <div style="color: var(--text-muted); padding: 15px;">Loading seasonal baselines...</div>
+                </div>
             </div>
         </div>
     </div>
@@ -795,13 +881,13 @@
                 <span style="font-size: 0.85rem; color: var(--secondary); font-weight: 700;" id="queryTimeLabel">Execution Engine Ready</span>
             </div>
             <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
-                Execute high-performance PySpark SQL queries directly against the 16,632 HDFS partitioned dataset.
+                Execute high-performance PySpark SQL queries directly against the 17,424 HDFS partitioned dataset across Japan.
             </p>
 
             <div class="query-selector-bar">
-                <button class="btn btn-primary" onclick="runSparkQuery('top_hottest')">🔥 Top 5 Hottest Cities</button>
+                <button class="btn btn-primary" onclick="runSparkQuery('top_hottest')">🔥 Top Hottest Japanese Cities</button>
                 <button class="btn" onclick="runSparkQuery('zscore_critical')">🚨 Critical Anomalies (|Z| > 2.2)</button>
-                <button class="btn" onclick="runSparkQuery('regional_summary')">🌍 Regional Aggregation Summary</button>
+                <button class="btn" onclick="runSparkQuery('regional_summary')">🌍 Japan Regional Aggregation Summary</button>
                 <button class="btn" onclick="runSparkQuery('diurnal_variance')">📊 24h Diurnal Variance</button>
             </div>
 
@@ -831,7 +917,7 @@
                 <div class="arch-box">
                     <div class="arch-step">Stage 1: Ingestion</div>
                     <div class="arch-title">Open-Meteo REST Stream</div>
-                    <div class="arch-desc">Fetches 21 global station nodes hourly data via Python <code>requests</code>.</div>
+                    <div class="arch-desc">Fetches 22 Japanese station nodes hourly data via Python <code>requests</code>.</div>
                 </div>
                 <div class="arch-box">
                     <div class="arch-step">Stage 2: Storage</div>
@@ -853,7 +939,7 @@
             <h4 style="color: var(--primary); margin-bottom: 12px;">Hive External Table DDL Schema (hive_schema.sql):</h4>
             <pre class="sql-code-box">
 CREATE EXTERNAL TABLE IF NOT EXISTS weather_db.raw_weather (
-    city STRING, country STRING, latitude DOUBLE, longitude DOUBLE,
+    city STRING, prefecture STRING, country STRING, latitude DOUBLE, longitude DOUBLE,
     timestamp STRING, date STRING, hour INT, temperature DOUBLE,
     humidity DOUBLE, wind_speed DOUBLE, precipitation DOUBLE, surface_pressure DOUBLE
 )
@@ -864,7 +950,7 @@ STORED AS TEXTFILE;
 
         <div class="panel-card">
             <div class="panel-head">
-                <h3>🌍 Hive Regional Aggregation Summary Table</h3>
+                <h3>🌍 Hive Regional Aggregation Summary Table (Japan 8 Regions)</h3>
             </div>
             <table class="data-table">
                 <thead>
@@ -887,15 +973,29 @@ STORED AS TEXTFILE;
     <script>
         let map = null;
         let markers = {};
-        let movingChart = null;
-        let hourlyChart = null;
-        let currentCountry = 'Japan';
+        let currentRegion = 'All';
         let currentCity = 'Tokyo';
-        let currentDays = 30;
         let rawAnomalies = [];
         let allCitiesData = [];
         let anomalyScope = 'city'; // 'city' or 'global'
         let anomalyTypeFilter = 'all'; // 'all', 'heatwave', 'coldsnap'
+
+        const japanRegionCityMap = {
+            "All": [
+                "Tokyo", "Yokohama", "Chiba", "Osaka", "Kyoto", "Kobe",
+                "Sapporo", "Asahikawa", "Hakodate", "Sendai", "Aomori", "Akita",
+                "Nagoya", "Niigata", "Kanazawa", "Hiroshima", "Okayama",
+                "Matsuyama", "Takamatsu", "Fukuoka", "Kagoshima", "Naha"
+            ],
+            "Kanto": ["Tokyo", "Yokohama", "Chiba"],
+            "Kansai": ["Osaka", "Kyoto", "Kobe"],
+            "Hokkaido": ["Sapporo", "Asahikawa", "Hakodate"],
+            "Tohoku": ["Sendai", "Aomori", "Akita"],
+            "Chubu": ["Nagoya", "Niigata", "Kanazawa"],
+            "Chugoku": ["Hiroshima", "Okayama"],
+            "Shikoku": ["Matsuyama", "Takamatsu"],
+            "Kyushu & Okinawa": ["Fukuoka", "Kagoshima", "Naha"]
+        };
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -912,9 +1012,6 @@ STORED AS TEXTFILE;
             
             document.getElementById('themeIcon').innerText = newTheme === 'dark' ? '🌙' : '☀️';
             document.getElementById('themeLabel').innerText = newTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
-            
-            if (movingChart) movingChart.updateOptions({ theme: { mode: newTheme } });
-            if (hourlyChart) hourlyChart.updateOptions({ theme: { mode: newTheme } });
         }
 
         function switchTab(tabId, btn) {
@@ -924,7 +1021,7 @@ STORED AS TEXTFILE;
             btn.classList.add('active');
 
             if (tabId === 'movingAvgTab') {
-                setTimeout(() => { loadCityChartData(); loadCityDetails(); }, 100);
+                loadTimeframeAnalytics();
             } else if (tabId === 'workbenchTab') {
                 runSparkQuery('top_hottest');
             }
@@ -936,31 +1033,20 @@ STORED AS TEXTFILE;
             await loadAnomaliesData();
             await loadRegionalData();
             
-            document.getElementById('countrySelect').value = 'Japan';
-            onCountryChanged();
+            onRegionChanged();
         }
 
         function initMap() {
-            map = L.map('map').setView([20, 0], 2);
+            map = L.map('map').setView([36.5, 138.0], 5); // Centered on Japan
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
         }
 
-        const countryCityMap = {
-            "Japan": ["Tokyo", "Osaka", "Sapporo"],
-            "UK": ["London", "Manchester", "Edinburgh"],
-            "USA": ["New York", "Chicago", "Miami"],
-            "Australia": ["Sydney", "Melbourne", "Brisbane"],
-            "Egypt": ["Cairo", "Alexandria", "Luxor"],
-            "India": ["Mumbai", "Delhi", "Bengaluru"],
-            "Brazil": ["Rio de Janeiro", "Sao Paulo", "Brasilia"]
-        };
-
-        function onCountryChanged() {
-            currentCountry = document.getElementById('countrySelect').value;
-            const cities = countryCityMap[currentCountry] || [];
+        function onRegionChanged() {
+            currentRegion = document.getElementById('regionSelect').value;
+            const cities = japanRegionCityMap[currentRegion] || japanRegionCityMap["All"];
             const citySelect = document.getElementById('citySelect');
             citySelect.innerHTML = '';
             
@@ -983,15 +1069,14 @@ STORED AS TEXTFILE;
             if (anomalyScope === 'city') {
                 document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
             }
-            document.getElementById('chartCityLabel').innerText = currentCity;
 
             loadCityDetails();
-            loadCityChartData();
+            loadTimeframeAnalytics();
             renderAnomalyList();
 
             if (markers[currentCity]) {
                 const latlng = markers[currentCity].getLatLng();
-                map.flyTo(latlng, 5, { duration: 1.2 });
+                map.flyTo(latlng, 7, { duration: 1.2 });
                 markers[currentCity].openTooltip();
             }
         }
@@ -1026,11 +1111,10 @@ STORED AS TEXTFILE;
                 });
 
                 const marker = L.marker([c.latitude, c.longitude], { icon: icon }).addTo(map);
-                marker.bindTooltip(`<b>${c.city}</b> (${c.latest_temp}°C)`, { className: 'map-tooltip', permanent: false });
+                const prefStr = c.prefecture ? ` (${c.prefecture})` : '';
+                marker.bindTooltip(`<b>${c.city}</b>${prefStr} - ${c.latest_temp}°C`, { className: 'map-tooltip', permanent: false });
                 
                 marker.on('click', () => {
-                    document.getElementById('countrySelect').value = c.country;
-                    onCountryChanged();
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
                 });
@@ -1054,10 +1138,74 @@ STORED AS TEXTFILE;
                 document.getElementById('popupPressure').innerText = `${data.latest.surface_pressure} hPa`;
                 document.getElementById('popupMeanTemp').innerText = `${data.stats.mean_temp} °C`;
                 document.getElementById('popupRange').innerText = `${data.stats.min_temp} - ${data.stats.max_temp} °C`;
-
-                renderHourlyChart(data.hourly_24h);
             } catch (err) {
                 console.error("Error loading city details:", err);
+            }
+        }
+
+        async function loadTimeframeAnalytics() {
+            try {
+                const res = await fetch(`/api/timeframe_analytics?city=${encodeURIComponent(currentCity)}`);
+                const data = await res.json();
+                if (data.error) return;
+
+                // 1. Daily Visual
+                document.getElementById('tfDailyDate').innerText = `Observation: ${data.daily.latest_date}`;
+                document.getElementById('tfDailyMean').innerText = `${data.daily.mean_temp} °C`;
+                document.getElementById('tfDailyRange').innerText = `${data.daily.min_temp} - ${data.daily.max_temp} °C`;
+                document.getElementById('tfDailyHum').innerText = `${data.daily.avg_humidity} %`;
+                document.getElementById('tfDailyWind').innerText = `${data.daily.max_wind} km/h`;
+
+                const hourlyContainer = document.getElementById('tfDailyHourlyBars');
+                hourlyContainer.innerHTML = data.daily.hourly.map(h => `
+                    <div style="flex: 0 0 45px; text-align: center; background: var(--card-sub-bg); padding: 8px 4px; border-radius: 8px; border: 1px solid var(--panel-border);">
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${h.hour}:00</div>
+                        <div style="font-size: 0.88rem; font-weight: 800; color: ${h.temperature > 25 ? 'var(--danger)' : 'var(--secondary)'};">${h.temperature}°</div>
+                        <div style="font-size: 0.68rem; color: var(--text-muted); margin-top: 4px;">💧${h.humidity}%</div>
+                    </div>
+                `).join('');
+
+                // 2. Weekly Visual
+                document.getElementById('tfWeeklyAvg7d').innerText = `7D Spark MA: ${data.weekly.moving_avg_7d_latest} °C`;
+                const weeklyContainer = document.getElementById('tfWeeklyGrid');
+                weeklyContainer.innerHTML = data.weekly.days.map(d => `
+                    <div style="background: var(--card-sub-bg); padding: 10px; border-radius: 12px; border: 1px solid var(--panel-border); text-align: center;">
+                        <div style="font-size: 0.72rem; color: var(--text-muted); font-weight: 700;">${d.date.slice(5)}</div>
+                        <div style="font-size: 1.1rem; font-weight: 900; color: var(--primary); margin: 4px 0;">${d.avg_temp}°C</div>
+                        <div style="font-size: 0.7rem; color: var(--text-muted);">${d.min_temp}° - ${d.max_temp}°</div>
+                        <div style="font-size: 0.72rem; color: var(--secondary); font-weight: 700; margin-top: 4px;">🌧️ ${d.total_precipitation}mm</div>
+                    </div>
+                `).join('');
+
+                // 3. Monthly Visual
+                document.getElementById('tfMonthlyMA').innerText = `30D Spark MA: ${data.monthly.moving_avg_30d_latest} °C`;
+                document.getElementById('tfMonthMean').innerText = `${data.monthly.avg_30d_temp} °C`;
+                document.getElementById('tfMonthRange').innerText = `${data.monthly.min_month_temp} - ${data.monthly.max_month_temp} °C`;
+                document.getElementById('tfMonthRain').innerText = `${data.monthly.total_month_precip} mm`;
+                document.getElementById('tfMonthAnomalies').innerText = data.monthly.anomaly_count;
+
+                const heatCount = data.monthly.heatwave_count;
+                const coldCount = data.monthly.coldsnap_count;
+                const totalAnom = heatCount + coldCount || 1;
+                document.getElementById('tfMonthAnomalyRatio').innerText = `${heatCount} Heatwaves | ${coldCount} Cold Snaps`;
+                document.getElementById('tfHeatBar').style.width = `${(heatCount / totalAnom) * 100}%`;
+                document.getElementById('tfColdBar').style.width = `${(coldCount / totalAnom) * 100}%`;
+
+                // 4. Yearly Visual
+                document.getElementById('tfYearlyStd').innerText = `Std Dev σ: ±${data.yearly.annual_std}°C`;
+                document.getElementById('tfYearMean').innerText = `${data.yearly.annual_mean} °C`;
+                document.getElementById('tfYearRange').innerText = `${data.yearly.annual_min} - ${data.yearly.annual_max} °C`;
+
+                const seasonalContainer = document.getElementById('tfSeasonalGrid');
+                seasonalContainer.innerHTML = Object.entries(data.yearly.seasonal_baselines).map(([season, temp]) => `
+                    <div style="background: var(--card-sub-bg); padding: 12px; border-radius: 12px; border: 1px solid var(--panel-border); display: flex; justify-content: space-between; align-items: center;">
+                        <span style="font-size: 0.85rem; font-weight: 700;">${season}</span>
+                        <span style="font-size: 1.1rem; font-weight: 900; color: var(--secondary); font-family: 'JetBrains Mono', monospace;">${temp} °C</span>
+                    </div>
+                `).join('');
+
+            } catch (err) {
+                console.error("Error loading timeframe analytics:", err);
             }
         }
 
@@ -1075,8 +1223,8 @@ STORED AS TEXTFILE;
 
         function toggleAnomalyScope() {
             anomalyScope = anomalyScope === 'city' ? 'global' : 'city';
-            document.getElementById('anomalyScopeBtn').innerText = anomalyScope === 'city' ? 'Scope: Selected City Only 🔍' : 'Scope: All 21 Global Cities 🌐';
-            document.getElementById('anomalyCityFocusLabel').innerText = anomalyScope === 'city' ? `Showing Anomalies for: ${currentCity}` : 'Showing Anomalies Across All 21 Global Stations';
+            document.getElementById('anomalyScopeBtn').innerText = anomalyScope === 'city' ? 'Scope: Selected City Only 🔍' : 'Scope: All 22 Japan Cities 🌐';
+            document.getElementById('anomalyCityFocusLabel').innerText = anomalyScope === 'city' ? `Showing Anomalies for: ${currentCity}` : 'Showing Anomalies Across All 22 Japanese Stations';
             renderAnomalyList();
         }
 
@@ -1110,11 +1258,13 @@ STORED AS TEXTFILE;
 
             container.innerHTML = filtered.map(a => {
                 const isHeat = a.anomaly_status === 'EXTREME HEATWAVE';
+                const tempVal = a.temperature !== undefined ? a.temperature : a.recorded_temp;
+                const meanVal = a.city_mean_temp !== undefined ? a.city_mean_temp : '--';
                 return `
                     <div class="anomaly-item ${isHeat ? 'heat' : 'cold'}">
                         <div>
                             <div style="font-weight: 800; font-size: 0.95rem;">${a.city} <span style="font-size: 0.8rem; color: var(--text-muted);">(${a.date})</span></div>
-                            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Temp: ${a.recorded_temp}°C | Baseline Mean: ${a.city_mean_temp}°C</div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Temp: ${tempVal}°C | Baseline Mean: ${meanVal}°C</div>
                         </div>
                         <span class="badge-pill ${isHeat ? 'badge-heat' : 'badge-cold'}">
                             ${a.anomaly_status} (Z=${a.z_score.toFixed(2)})
@@ -1130,12 +1280,13 @@ STORED AS TEXTFILE;
             const tbody = document.getElementById('anomalyTableBody');
             tbody.innerHTML = rawAnomalies.map(a => {
                 const isHeat = a.anomaly_status === 'EXTREME HEATWAVE';
+                const tempVal = a.temperature !== undefined ? a.temperature : a.recorded_temp;
                 return `
                     <tr>
                         <td style="font-weight: 700;">${a.city}</td>
                         <td>${a.region}</td>
                         <td style="font-family: 'JetBrains Mono', monospace;">${a.timestamp}</td>
-                        <td style="font-weight: 800; color: ${isHeat ? 'var(--danger)' : 'var(--secondary)'};">${a.recorded_temp} °C</td>
+                        <td style="font-weight: 800; color: ${isHeat ? 'var(--danger)' : 'var(--secondary)'};">${tempVal} °C</td>
                         <td>${a.city_mean_temp} °C</td>
                         <td style="font-family: 'JetBrains Mono', monospace; font-weight: 800;">${a.z_score.toFixed(2)}</td>
                         <td><span class="badge-pill ${isHeat ? 'badge-heat' : 'badge-cold'}">${a.anomaly_status}</span></td>
@@ -1153,90 +1304,16 @@ STORED AS TEXTFILE;
                 tbody.innerHTML = data.map(r => `
                     <tr>
                         <td style="font-weight: 800; color: var(--primary);">${r.region}</td>
-                        <td>${r.city_count} Cities</td>
-                        <td style="font-weight: 700;">${r.regional_avg_temp} °C</td>
-                        <td>${r.min_recorded_temp}°C - ${r.max_recorded_temp}°C</td>
-                        <td>${r.regional_avg_humidity} %</td>
-                        <td style="font-weight: 700; color: var(--secondary);">${r.total_regional_precip} mm</td>
+                        <td>${r.total_cities || r.city_count} Cities</td>
+                        <td style="font-weight: 700;">${r.region_avg_temp || r.regional_avg_temp} °C</td>
+                        <td>${r.region_min_temp || r.min_recorded_temp}°C - ${r.region_max_temp || r.max_recorded_temp}°C</td>
+                        <td>${r.region_avg_humidity || r.regional_avg_humidity} %</td>
+                        <td style="font-weight: 700; color: var(--secondary);">${r.region_total_precipitation || r.total_regional_precip} mm</td>
                     </tr>
                 `).join('');
             } catch (err) {
                 console.error("Error loading regional data:", err);
             }
-        }
-
-        async function loadCityChartData() {
-            try {
-                const res = await fetch(`/api/daily?city=${encodeURIComponent(currentCity)}`);
-                const data = await res.json();
-                renderMovingAvgChart(data);
-            } catch (err) {
-                console.error("Error loading chart data:", err);
-            }
-        }
-
-        function setChartDays(days, el) {
-            currentDays = days;
-            document.querySelectorAll('.pill-group .pill').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
-            loadCityChartData();
-        }
-
-        function renderMovingAvgChart(dailyData) {
-            const sliced = dailyData.slice(-currentDays);
-            const dates = sliced.map(d => d.date);
-            const actualTemp = sliced.map(d => d.avg_temp);
-            const ma7 = sliced.map(d => d.moving_avg_7d);
-            const ma30 = sliced.map(d => d.moving_avg_30d);
-
-            const options = {
-                chart: {
-                    type: 'line',
-                    height: 380,
-                    toolbar: { show: false },
-                    background: 'transparent'
-                },
-                theme: { mode: document.documentElement.getAttribute('data-theme') || 'dark' },
-                stroke: { width: [3, 2, 2], curve: 'smooth', dashArray: [0, 0, 4] },
-                colors: ['#38bdf8', '#10b981', '#a855f7'],
-                series: [
-                    { name: 'Daily Avg Temp (°C)', data: actualTemp },
-                    { name: '7-Day Spark Moving Avg', data: ma7 },
-                    { name: '30-Day Spark Moving Avg', data: ma30 }
-                ],
-                xaxis: { categories: dates, labels: { style: { colors: '#94a3b8' } } },
-                yaxis: { labels: { style: { colors: '#94a3b8' } } },
-                grid: { borderColor: 'rgba(255, 255, 255, 0.08)' }
-            };
-
-            if (movingChart) movingChart.destroy();
-            movingChart = new ApexCharts(document.querySelector("#movingAvgChart"), options);
-            movingChart.render();
-        }
-
-        function renderHourlyChart(hourlyData) {
-            const hours = hourlyData.map(h => `${h.hour}:00`);
-            const temps = hourlyData.map(h => h.temperature);
-            const humidity = hourlyData.map(h => h.humidity);
-
-            const options = {
-                chart: { type: 'area', height: 380, toolbar: { show: false }, background: 'transparent' },
-                theme: { mode: document.documentElement.getAttribute('data-theme') || 'dark' },
-                stroke: { width: 3, curve: 'smooth' },
-                colors: ['#ff3b5c', '#38bdf8'],
-                fill: { type: 'gradient', gradient: { opacityFrom: 0.45, opacityTo: 0.05 } },
-                series: [
-                    { name: 'Temperature (°C)', data: temps },
-                    { name: 'Humidity (%)', data: humidity }
-                ],
-                xaxis: { categories: hours, labels: { style: { colors: '#94a3b8' } } },
-                yaxis: { labels: { style: { colors: '#94a3b8' } } },
-                grid: { borderColor: 'rgba(255, 255, 255, 0.08)' }
-            };
-
-            if (hourlyChart) hourlyChart.destroy();
-            hourlyChart = new ApexCharts(document.querySelector("#hourlyChart"), options);
-            hourlyChart.render();
         }
 
         async function runSparkQuery(queryType) {
@@ -1278,7 +1355,7 @@ STORED AS TEXTFILE;
                 const res = await fetch('/api/refresh', { method: 'POST' });
                 const data = await res.json();
                 if (data.success) {
-                    showToast("Pipeline Refreshed Successfully!");
+                    showToast("Japan Pipeline Refreshed Successfully!");
                     await initDashboard();
                 }
             } catch (err) {

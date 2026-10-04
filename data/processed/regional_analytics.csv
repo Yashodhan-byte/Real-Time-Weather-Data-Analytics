@@ -1,7 +1,9 @@
 region,total_cities,region_avg_temp,region_min_temp,region_max_temp,region_avg_humidity,region_total_precipitation
-Africa,3,28.59,18.4,45.9,49.76,1.9
-Asia,6,23.85,4.5,36.9,77.24,1383.4
-Europe,3,16.09,7.1,26.7,71.75,145.55
-North America,3,20.75,5.8,42.5,71.43,285.2
-Oceania,3,16.83,5.1,33.2,69.58,158.2
-South America,3,21.74,10.0,34.2,75.74,622.1
+Chubu,3,22.49,15.3,31.9,79.7,784.7
+Chugoku,2,23.12,14.7,30.8,78.04,385.2
+Hokkaido,3,17.28,4.5,25.2,76.01,167.0
+Kansai,3,23.27,15.0,30.8,80.75,821.9
+Kanto,3,22.15,15.7,31.2,85.02,2182.3
+Kyushu & Okinawa,3,25.75,17.9,32.8,77.73,473.3
+Shikoku,2,23.88,17.6,30.6,78.42,528.9
+Tohoku,3,19.72,10.5,28.5,77.35,474.1

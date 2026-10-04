@@ -10,42 +10,45 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 import config
 
-# Expanded target cities (at least 3 cities per country across 7 major countries)
+# Target cities across Japan's prefectures & regions (22 station nodes across 8 Japanese regions)
 CITIES = [
-    # Japan (Asia)
-    {"city": "Tokyo", "country": "Japan", "region": "Asia", "lat": 35.6762, "lon": 139.6503},
-    {"city": "Osaka", "country": "Japan", "region": "Asia", "lat": 34.6937, "lon": 135.5023},
-    {"city": "Sapporo", "country": "Japan", "region": "Asia", "lat": 43.0618, "lon": 141.3545},
+    # Kanto Region (Greater Tokyo Area)
+    {"city": "Tokyo", "prefecture": "Tokyo", "region": "Kanto", "lat": 35.6762, "lon": 139.6503, "country": "Japan"},
+    {"city": "Yokohama", "prefecture": "Kanagawa", "region": "Kanto", "lat": 35.4437, "lon": 139.6380, "country": "Japan"},
+    {"city": "Chiba", "prefecture": "Chiba", "region": "Kanto", "lat": 35.6074, "lon": 140.1065, "country": "Japan"},
 
-    # UK (Europe)
-    {"city": "London", "country": "UK", "region": "Europe", "lat": 51.5074, "lon": -0.1278},
-    {"city": "Manchester", "country": "UK", "region": "Europe", "lat": 53.4808, "lon": -2.2426},
-    {"city": "Edinburgh", "country": "UK", "region": "Europe", "lat": 55.9533, "lon": -3.1883},
+    # Kansai Region
+    {"city": "Osaka", "prefecture": "Osaka", "region": "Kansai", "lat": 34.6937, "lon": 135.5023, "country": "Japan"},
+    {"city": "Kyoto", "prefecture": "Kyoto", "region": "Kansai", "lat": 35.0116, "lon": 135.7681, "country": "Japan"},
+    {"city": "Kobe", "prefecture": "Hyogo", "region": "Kansai", "lat": 34.6901, "lon": 135.1955, "country": "Japan"},
 
-    # USA (North America)
-    {"city": "New York", "country": "USA", "region": "North America", "lat": 40.7128, "lon": -74.0060},
-    {"city": "Los Angeles", "country": "USA", "region": "North America", "lat": 34.0522, "lon": -118.2437},
-    {"city": "Chicago", "country": "USA", "region": "North America", "lat": 41.8781, "lon": -87.6298},
+    # Hokkaido Region
+    {"city": "Sapporo", "prefecture": "Hokkaido", "region": "Hokkaido", "lat": 43.0618, "lon": 141.3545, "country": "Japan"},
+    {"city": "Asahikawa", "prefecture": "Hokkaido", "region": "Hokkaido", "lat": 43.7706, "lon": 142.3648, "country": "Japan"},
+    {"city": "Hakodate", "prefecture": "Hokkaido", "region": "Hokkaido", "lat": 41.7687, "lon": 140.7288, "country": "Japan"},
 
-    # Australia (Oceania)
-    {"city": "Sydney", "country": "Australia", "region": "Oceania", "lat": -33.8688, "lon": 151.2093},
-    {"city": "Melbourne", "country": "Australia", "region": "Oceania", "lat": -37.8136, "lon": 144.9631},
-    {"city": "Brisbane", "country": "Australia", "region": "Oceania", "lat": -27.4698, "lon": 153.0251},
+    # Tohoku Region
+    {"city": "Sendai", "prefecture": "Miyagi", "region": "Tohoku", "lat": 38.2682, "lon": 140.8694, "country": "Japan"},
+    {"city": "Aomori", "prefecture": "Aomori", "region": "Tohoku", "lat": 40.8244, "lon": 140.7400, "country": "Japan"},
+    {"city": "Akita", "prefecture": "Akita", "region": "Tohoku", "lat": 39.7186, "lon": 140.1024, "country": "Japan"},
 
-    # Egypt (Africa)
-    {"city": "Cairo", "country": "Egypt", "region": "Africa", "lat": 30.0444, "lon": 31.2357},
-    {"city": "Alexandria", "country": "Egypt", "region": "Africa", "lat": 31.2001, "lon": 29.9187},
-    {"city": "Luxor", "country": "Egypt", "region": "Africa", "lat": 25.6872, "lon": 32.6396},
+    # Chubu Region
+    {"city": "Nagoya", "prefecture": "Aichi", "region": "Chubu", "lat": 35.1815, "lon": 136.9066, "country": "Japan"},
+    {"city": "Niigata", "prefecture": "Niigata", "region": "Chubu", "lat": 37.9162, "lon": 139.0364, "country": "Japan"},
+    {"city": "Kanazawa", "prefecture": "Ishikawa", "region": "Chubu", "lat": 36.5613, "lon": 136.6562, "country": "Japan"},
 
-    # India (Asia)
-    {"city": "Mumbai", "country": "India", "region": "Asia", "lat": 19.0760, "lon": 72.8777},
-    {"city": "Delhi", "country": "India", "region": "Asia", "lat": 28.6139, "lon": 77.2090},
-    {"city": "Bengaluru", "country": "India", "region": "Asia", "lat": 12.9716, "lon": 77.5946},
+    # Chugoku Region
+    {"city": "Hiroshima", "prefecture": "Hiroshima", "region": "Chugoku", "lat": 34.3853, "lon": 132.4553, "country": "Japan"},
+    {"city": "Okayama", "prefecture": "Okayama", "region": "Chugoku", "lat": 34.6617, "lon": 133.9350, "country": "Japan"},
 
-    # Brazil (South America)
-    {"city": "São Paulo", "country": "Brazil", "region": "South America", "lat": -23.5505, "lon": -46.6333},
-    {"city": "Rio de Janeiro", "country": "Brazil", "region": "South America", "lat": -22.9068, "lon": -43.1729},
-    {"city": "Brasília", "country": "Brazil", "region": "South America", "lat": -15.7975, "lon": -47.8919}
+    # Shikoku Region
+    {"city": "Matsuyama", "prefecture": "Ehime", "region": "Shikoku", "lat": 33.8392, "lon": 132.7657, "country": "Japan"},
+    {"city": "Takamatsu", "prefecture": "Kagawa", "region": "Shikoku", "lat": 34.3402, "lon": 134.0433, "country": "Japan"},
+
+    # Kyushu & Okinawa Region
+    {"city": "Fukuoka", "prefecture": "Fukuoka", "region": "Kyushu & Okinawa", "lat": 33.5904, "lon": 130.4017, "country": "Japan"},
+    {"city": "Kagoshima", "prefecture": "Kagoshima", "region": "Kyushu & Okinawa", "lat": 31.5966, "lon": 130.5571, "country": "Japan"},
+    {"city": "Naha", "prefecture": "Okinawa", "region": "Kyushu & Okinawa", "lat": 26.2124, "lon": 127.6809, "country": "Japan"}
 ]
 
 def fetch_city_weather(lat, lon, city_name="", past_days=30):
@@ -96,6 +99,7 @@ def run_ingestion(output_base_dir="data"):
                 
                 record = {
                     "city": city_name,
+                    "prefecture": c.get("prefecture", "Japan"),
                     "country": c["country"],
                     "region": c["region"],
                     "latitude": c["lat"],
