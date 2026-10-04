@@ -699,21 +699,32 @@
             <div class="panel-card">
                 <div class="panel-head">
                     <h3>⚡ Anomaly Intelligence Feed</h3>
-                    <input type="text" id="searchAnomaly" placeholder="Filter city/type..." onkeyup="filterAnomaliesUI()" style="padding: 6px 12px; font-size: 0.82rem;">
+                    <input type="text" id="searchAnomaly" placeholder="Filter city/type..." onkeyup="filterAnomaliesUI()" style="padding: 6px 12px; font-size: 0.82rem; width: 140px;">
                 </div>
 
                 <div class="anomaly-sub-grid">
-                    <div class="anomaly-metric-box">
+                    <div class="anomaly-metric-box" style="cursor: pointer;" onclick="setAnomalyTypeFilter('heatwave')">
                         <div class="anomaly-metric-num" id="statHeatwaveCount" style="color: var(--danger);">--</div>
                         <div class="anomaly-metric-txt">🔥 Heatwaves</div>
                     </div>
-                    <div class="anomaly-metric-box">
+                    <div class="anomaly-metric-box" style="cursor: pointer;" onclick="setAnomalyTypeFilter('coldsnap')">
                         <div class="anomaly-metric-num" id="statColdSnapCount" style="color: var(--secondary);">--</div>
                         <div class="anomaly-metric-txt">❄️ Cold Snaps</div>
                     </div>
                 </div>
 
-                <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-bottom: 12px;" id="anomalyCityFocusLabel">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; flex-wrap: wrap; gap: 8px;">
+                    <div class="pill-group">
+                        <div class="pill active" id="pillAnomalyAll" onclick="setAnomalyTypeFilter('all')">All</div>
+                        <div class="pill" id="pillAnomalyHeat" onclick="setAnomalyTypeFilter('heatwave')">🔥 Heatwaves</div>
+                        <div class="pill" id="pillAnomalyCold" onclick="setAnomalyTypeFilter('coldsnap')">❄️ Cold Snaps</div>
+                    </div>
+                    <div style="font-size: 0.82rem; color: var(--primary); font-weight: 700; cursor: pointer; text-decoration: underline;" onclick="toggleAnomalyScope()" id="anomalyScopeBtn">
+                        Scope: Selected City Only 🔍
+                    </div>
+                </div>
+
+                <div style="font-size: 0.82rem; color: var(--text-muted); font-weight: 600; margin-bottom: 10px;" id="anomalyCityFocusLabel">
                     Showing Anomalies for: Tokyo
                 </div>
 
@@ -883,6 +894,8 @@ STORED AS TEXTFILE;
         let currentDays = 30;
         let rawAnomalies = [];
         let allCitiesData = [];
+        let anomalyScope = 'city'; // 'city' or 'global'
+        let anomalyTypeFilter = 'all'; // 'all', 'heatwave', 'coldsnap'
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -967,7 +980,9 @@ STORED AS TEXTFILE;
 
         function onCityChanged() {
             currentCity = document.getElementById('citySelect').value;
-            document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
+            if (anomalyScope === 'city') {
+                document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
+            }
             document.getElementById('chartCityLabel').innerText = currentCity;
 
             loadCityDetails();
@@ -992,6 +1007,9 @@ STORED AS TEXTFILE;
                 document.getElementById('kpiAnomalies').innerText = data.anomalies_count;
                 document.getElementById('kpiAnomalySub').innerText = `${data.heatwave_count} Heatwaves | ${data.coldsnap_count} Cold Snaps`;
                 document.getElementById('kpiPrecip').innerText = `${data.total_precip} mm`;
+
+                document.getElementById('statHeatwaveCount').innerText = data.heatwave_count;
+                document.getElementById('statColdSnapCount').innerText = data.coldsnap_count;
 
                 allCitiesData = data.city_coords;
                 renderMapMarkers(allCitiesData);
@@ -1045,14 +1063,8 @@ STORED AS TEXTFILE;
 
         async function loadAnomaliesData() {
             try {
-                const res = await fetch('/api/anomalies');
+                const res = await fetch('/api/anomalies?status=all&city=all');
                 rawAnomalies = await res.json();
-
-                const heatCount = rawAnomalies.filter(a => a.anomaly_status === 'EXTREME HEATWAVE').length;
-                const coldCount = rawAnomalies.filter(a => a.anomaly_status === 'EXTREME COLD SNAP').length;
-
-                document.getElementById('statHeatwaveCount').innerText = heatCount;
-                document.getElementById('statColdSnapCount').innerText = coldCount;
 
                 renderAnomalyList();
                 renderAnomalyTable();
@@ -1061,18 +1073,38 @@ STORED AS TEXTFILE;
             }
         }
 
+        function toggleAnomalyScope() {
+            anomalyScope = anomalyScope === 'city' ? 'global' : 'city';
+            document.getElementById('anomalyScopeBtn').innerText = anomalyScope === 'city' ? 'Scope: Selected City Only 🔍' : 'Scope: All 21 Global Cities 🌐';
+            document.getElementById('anomalyCityFocusLabel').innerText = anomalyScope === 'city' ? `Showing Anomalies for: ${currentCity}` : 'Showing Anomalies Across All 21 Global Stations';
+            renderAnomalyList();
+        }
+
+        function setAnomalyTypeFilter(type) {
+            anomalyTypeFilter = type;
+            document.getElementById('pillAnomalyAll').classList.toggle('active', type === 'all');
+            document.getElementById('pillAnomalyHeat').classList.toggle('active', type === 'heatwave');
+            document.getElementById('pillAnomalyCold').classList.toggle('active', type === 'coldsnap');
+            renderAnomalyList();
+        }
+
         function renderAnomalyList() {
             const container = document.getElementById('anomalyList');
             const search = document.getElementById('searchAnomaly').value.toLowerCase();
             
             const filtered = rawAnomalies.filter(a => {
-                const matchesCity = a.city.toLowerCase() === currentCity.toLowerCase();
+                const matchesScope = anomalyScope === 'global' || a.city.toLowerCase() === currentCity.toLowerCase();
+                const matchesType = anomalyTypeFilter === 'all' || 
+                                   (anomalyTypeFilter === 'heatwave' && a.anomaly_status === 'EXTREME HEATWAVE') ||
+                                   (anomalyTypeFilter === 'coldsnap' && a.anomaly_status === 'EXTREME COLD SNAP');
                 const matchesSearch = a.city.toLowerCase().includes(search) || a.anomaly_status.toLowerCase().includes(search);
-                return matchesCity && matchesSearch;
+                return matchesScope && matchesType && matchesSearch;
             });
 
             if (filtered.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 25px;">No extreme anomalies recorded for ${currentCity}.</div>`;
+                const locationText = anomalyScope === 'city' ? currentCity : 'all cities';
+                const typeText = anomalyTypeFilter === 'all' ? 'extreme' : anomalyTypeFilter;
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 25px;">No ${typeText} anomalies recorded for ${locationText}.</div>`;
                 return;
             }
 

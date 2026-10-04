@@ -57,9 +57,15 @@ def fetch_city_weather(lat, lon, city_name="", past_days=30):
         "forecast_days": 3,
         "timezone": "UTC"
     }
-    res = requests.get(config.OPENMETEO_BASE_URL, params=params, timeout=15)
-    res.raise_for_status()
-    return res.json()
+    for attempt in range(2):
+        try:
+            res = requests.get(config.OPENMETEO_BASE_URL, params=params, timeout=6)
+            res.raise_for_status()
+            return res.json()
+        except Exception as e:
+            if attempt == 1:
+                raise e
+            time.sleep(0.3)
 
 def run_ingestion(output_base_dir="data"):
     print("=" * 60)

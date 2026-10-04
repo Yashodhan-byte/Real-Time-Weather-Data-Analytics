@@ -139,15 +139,23 @@ def get_anomalies():
         return jsonify([])
     
     filter_status = request.args.get("status", "all")
+    city_filter = request.args.get("city", "all")
+
+    if city_filter and city_filter.lower() != "all":
+        df = df[df["city"].str.lower() == city_filter.lower()]
+    
     if filter_status == "heatwave":
         df = df[df["anomaly_status"] == "EXTREME HEATWAVE"]
+        df = df.sort_values("z_score", ascending=False)
     elif filter_status == "coldsnap":
         df = df[df["anomaly_status"] == "EXTREME COLD SNAP"]
+        df = df.sort_values("z_score", ascending=True)
     else:
         df = df[df["anomaly_status"] != "NORMAL"]
+        df["abs_z"] = df["z_score"].abs()
+        df = df.sort_values("abs_z", ascending=False)
 
-    df = df.sort_values("z_score", ascending=False)
-    return jsonify(df.head(50).to_dict(orient="records"))
+    return jsonify(df.head(100).to_dict(orient="records"))
 
 @app.route("/api/regional")
 def get_regional():
@@ -231,15 +239,15 @@ def run_sql_query():
 @app.route("/api/refresh", methods=["POST"])
 def refresh_data():
     try:
-        python_exe = sys.executable
-        ingest_script = os.path.join(BASE_DIR, "student1_ingestion", "ingest_weather.py")
-        spark_script = os.path.join(BASE_DIR, "student2_analytics", "spark_analytics.py")
+        from student1_ingestion.ingest_weather import run_ingestion
+        from student2_analytics.spark_analytics import run_pyspark_analytics
 
-        subprocess.run([python_exe, ingest_script], check=True)
-        subprocess.run([python_exe, spark_script], check=True)
+        raw_df, raw_csv_path = run_ingestion(output_base_dir=os.path.join(BASE_DIR, "data"))
+        run_pyspark_analytics(raw_csv_path=raw_csv_path, output_dir=os.path.join(BASE_DIR, "data", "processed"))
 
-        return jsonify({"success": True, "message": "Pipeline refreshed!"})
+        return jsonify({"success": True, "message": "Pipeline refreshed successfully!"})
     except Exception as e:
+        print(f"[Refresh Error] {e}")
         return jsonify({"success": False, "error": str(e)}), 500
 
 def start_server(port=5000):
