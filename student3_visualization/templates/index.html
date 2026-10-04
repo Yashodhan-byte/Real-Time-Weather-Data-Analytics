@@ -1,107 +1,66 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
     <meta http-equiv="Pragma" content="no-cache" />
-    <title>Real-Time Weather Intelligence Command Center</title>
+    <title>NEXUS-METEO | Big Data Climate Analytics Engine</title>
     
     <!-- Google Fonts, ApexCharts, Leaflet Maps -->
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* Multi-Color Palette Presets */
-        body.theme-amber {
-            --bg-body: #0d0b18;
-            --card-bg: rgba(26, 20, 48, 0.85);
-            --card-hover: rgba(38, 30, 70, 0.95);
-            --border-color: rgba(245, 158, 11, 0.25);
+        :root[data-theme="dark"] {
+            --bg-body: #050814;
+            --panel-bg: rgba(11, 17, 36, 0.88);
+            --panel-border: rgba(255, 255, 255, 0.08);
+            --panel-hover: rgba(19, 29, 58, 0.95);
+            --card-sub-bg: rgba(0, 0, 0, 0.4);
             
-            --primary: #f59e0b; /* Amber Gold */
-            --primary-glow: rgba(245, 158, 11, 0.4);
-            --secondary: #8b5cf6; /* Neon Purple */
-            --accent: #ec4899; /* Vibrant Pink */
+            --primary: #10b981;    /* Emerald */
+            --secondary: #38bdf8;  /* Cyan */
+            --accent: #a855f7;     /* Purple */
+            --warning: #f59e0b;    /* Amber */
+            --danger: #ff3b5c;     /* Crimson */
             
-            --heat-red: #ff2a5f;
-            --cold-blue: #06b6d4;
-            --text-main: #ffffff;
-            --text-muted: #cbd5e1;
-            --input-bg: rgba(0, 0, 0, 0.4);
-        }
-
-        body.theme-emerald {
-            --bg-body: #041410;
-            --card-bg: rgba(10, 38, 30, 0.85);
-            --card-hover: rgba(16, 56, 44, 0.95);
-            --border-color: rgba(16, 185, 129, 0.25);
-            
-            --primary: #10b981; /* Emerald */
-            --primary-glow: rgba(16, 185, 129, 0.4);
-            --secondary: #06b6d4; /* Cyan */
-            --accent: #3b82f6;
-            
-            --heat-red: #ff3b5c;
-            --cold-blue: #38bdf8;
-            --text-main: #ffffff;
+            --text-main: #f8fafc;
             --text-muted: #94a3b8;
             --input-bg: rgba(0, 0, 0, 0.4);
+            --shadow-color: rgba(0, 0, 0, 0.5);
+            --border-glow: rgba(56, 189, 248, 0.25);
+            --code-bg: #090d1a;
         }
 
-        body.theme-violet {
-            --bg-body: #110826;
-            --card-bg: rgba(28, 14, 60, 0.85);
-            --card-hover: rgba(45, 23, 95, 0.95);
-            --border-color: rgba(168, 85, 247, 0.25);
+        :root[data-theme="light"] {
+            --bg-body: #f1f5f9;
+            --panel-bg: rgba(255, 255, 255, 0.92);
+            --panel-border: rgba(0, 0, 0, 0.08);
+            --panel-hover: rgba(241, 245, 249, 0.95);
+            --card-sub-bg: rgba(241, 245, 249, 0.8);
             
-            --primary: #a855f7; /* Violet */
-            --primary-glow: rgba(168, 85, 247, 0.4);
-            --secondary: #ec4899; /* Pink */
-            --accent: #6366f1;
+            --primary: #059669;
+            --secondary: #0284c7;
+            --accent: #7c3aed;
+            --warning: #d97706;
+            --danger: #e11d48;
             
-            --heat-red: #ff2a5f;
-            --cold-blue: #06b6d4;
-            --text-main: #ffffff;
-            --text-muted: #d8b4fe;
-            --input-bg: rgba(0, 0, 0, 0.4);
-        }
-
-        body.theme-cyan {
-            --bg-body: #06131e;
-            --card-bg: rgba(12, 33, 52, 0.85);
-            --card-hover: rgba(18, 50, 78, 0.95);
-            --border-color: rgba(6, 182, 212, 0.25);
-            
-            --primary: #06b6d4; /* Cyan */
-            --primary-glow: rgba(6, 182, 212, 0.4);
-            --secondary: #3b82f6; /* Blue */
-            --accent: #10b981;
-            
-            --heat-red: #ff3b5c;
-            --cold-blue: #38bdf8;
-            --text-main: #ffffff;
-            --text-muted: #94a3b8;
-            --input-bg: rgba(0, 0, 0, 0.4);
-        }
-
-        body.light-mode {
-            --bg-body: #f8fafc;
-            --card-bg: rgba(255, 255, 255, 0.92);
-            --card-hover: rgba(241, 245, 249, 1);
-            --border-color: rgba(0, 0, 0, 0.12);
             --text-main: #0f172a;
-            --text-muted: #475569;
-            --input-bg: rgba(241, 245, 249, 0.9);
+            --text-muted: #64748b;
+            --input-bg: rgba(255, 255, 255, 0.9);
+            --shadow-color: rgba(0, 0, 0, 0.06);
+            --border-glow: rgba(2, 132, 199, 0.25);
+            --code-bg: #1e293b;
         }
 
         * {
             box-sizing: border-box;
             margin: 0;
             padding: 0;
-            transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
         }
 
         body {
@@ -112,145 +71,110 @@
             padding: 24px;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 15% 15%, var(--primary-glow) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%);
+                radial-gradient(circle at 10% 10%, rgba(16, 185, 129, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 90% 90%, rgba(56, 189, 248, 0.06) 0%, transparent 45%),
+                radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.04) 0%, transparent 60%);
             background-attachment: fixed;
         }
 
-        /* Marquee Ticker */
-        .ticker-wrap {
-            width: 100%;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 10px 18px;
-            margin-bottom: 20px;
-            overflow: hidden;
-            backdrop-filter: blur(10px);
+        /* Telemetry Stream HUD Bar */
+        .hud-stream-bar {
             display: flex;
             align-items: center;
+            justify-content: space-between;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 10px 22px;
+            margin-bottom: 22px;
+            backdrop-filter: blur(16px);
+            flex-wrap: wrap;
             gap: 12px;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 4px 20px var(--shadow-color);
         }
 
-        .ticker-title {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
-            font-size: 0.75rem;
-            font-weight: 800;
-            padding: 4px 12px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            white-space: nowrap;
-        }
-
-        .ticker {
+        .hud-pill {
             display: flex;
-            white-space: nowrap;
-            animation: ticker 40s linear infinite;
-            font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
-            color: var(--text-muted);
-        }
-
-        @keyframes ticker {
-            0% { transform: translateX(100%); }
-            100% { transform: translateX(-100%); }
-        }
-
-        /* Toast */
-        #toast {
-            position: fixed;
-            top: 24px;
-            right: 24px;
-            padding: 14px 28px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.8rem;
             font-weight: 700;
-            box-shadow: 0 10px 30px var(--primary-glow);
-            backdrop-filter: blur(12px);
-            z-index: 9999;
-            transform: translateY(-100px);
-            opacity: 0;
-            transition: all 0.35s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        #toast.show {
-            transform: translateY(0);
-            opacity: 1;
+            font-family: 'JetBrains Mono', monospace;
         }
 
+        .hud-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            background: var(--primary);
+            box-shadow: 0 0 10px var(--primary);
+            animation: pulse-dot 1.8s infinite;
+        }
+
+        @keyframes pulse-dot {
+            0% { transform: scale(0.95); opacity: 0.8; }
+            50% { transform: scale(1.3); opacity: 1; }
+            100% { transform: scale(0.95); opacity: 0.8; }
+        }
+
+        /* Header Navigation */
         header {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 24px;
-            padding-bottom: 20px;
-            border-bottom: 1px solid var(--border-color);
+            margin-bottom: 22px;
+            padding-bottom: 18px;
+            border-bottom: 1px solid var(--panel-border);
             flex-wrap: wrap;
             gap: 16px;
         }
 
-        .header-title h1 {
+        .brand-title {
             font-size: 2.3rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
+            background: linear-gradient(135deg, var(--primary), var(--secondary), var(--accent));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
             align-items: center;
-            gap: 14px;
+            gap: 12px;
+            letter-spacing: -0.6px;
         }
 
-        .header-title p {
+        .brand-sub {
             color: var(--text-muted);
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             margin-top: 4px;
+            font-weight: 500;
         }
 
-        .controls-bar {
+        .header-actions {
             display: flex;
             align-items: center;
             gap: 12px;
             flex-wrap: wrap;
         }
 
-        .theme-toggle-btn {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 10px 18px;
-            border-radius: 14px;
-            font-weight: 700;
-            font-size: 0.9rem;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            backdrop-filter: blur(10px);
-        }
-
+        /* Buttons & Controls */
         .btn {
-            background: var(--card-bg);
+            background: var(--panel-bg);
             color: var(--text-main);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             padding: 10px 20px;
             border-radius: 14px;
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 0.88rem;
             cursor: pointer;
-            backdrop-filter: blur(12px);
-            transition: all 0.25s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 4px 15px var(--shadow-color);
         }
 
         .btn:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 20px var(--primary-glow);
+            border-color: var(--secondary);
+            box-shadow: 0 0 16px var(--border-glow);
             transform: translateY(-2px);
         }
 
@@ -258,104 +182,146 @@
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             color: #fff;
             border: none;
-            box-shadow: 0 6px 20px var(--primary-glow);
+            box-shadow: 0 4px 15px var(--border-glow);
         }
 
-        select {
-            background: var(--card-bg);
-            color: var(--text-main);
-            border: 1px solid var(--border-color);
-            padding: 10px 18px;
+        .btn-theme {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
+            padding: 10px 16px;
             border-radius: 14px;
+            cursor: pointer;
+            font-weight: 700;
+            font-size: 0.88rem;
+        }
+
+        /* Navigation Tab Bar */
+        .tab-bar {
+            display: flex;
+            gap: 8px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 18px;
+            padding: 6px;
+            margin-bottom: 24px;
+            overflow-x: auto;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .tab-btn {
+            padding: 11px 22px;
+            border-radius: 14px;
+            border: none;
+            background: transparent;
+            color: var(--text-muted);
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            white-space: nowrap;
+        }
+
+        .tab-btn:hover, .tab-btn.active {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            box-shadow: 0 4px 18px var(--border-glow);
+        }
+
+        /* Filter Panel Bar */
+        .filter-panel {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 18px;
+            padding: 16px 22px;
+            margin-bottom: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 16px;
+            backdrop-filter: blur(16px);
+            box-shadow: 0 4px 20px var(--shadow-color);
+        }
+
+        .filter-group-inline {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        select, input[type="text"] {
+            background: var(--input-bg);
+            color: var(--text-main);
+            border: 1px solid var(--panel-border);
+            padding: 10px 18px;
+            border-radius: 12px;
             font-family: 'Outfit', sans-serif;
             font-weight: 700;
-            font-size: 0.95rem;
+            font-size: 0.92rem;
             outline: none;
-            cursor: pointer;
-            backdrop-filter: blur(12px);
         }
 
-        select:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 16px var(--primary-glow);
+        select:focus, input[type="text"]:focus {
+            border-color: var(--secondary);
+            box-shadow: 0 0 16px var(--border-glow);
         }
 
-        /* City Mini Cards Carousel */
-        .city-cards-scroll {
-            display: flex;
-            gap: 14px;
-            overflow-x: auto;
-            padding-bottom: 12px;
-            margin-bottom: 24px;
-        }
-
-        .city-mini-card {
-            min-width: 160px;
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 14px 16px;
-            backdrop-filter: blur(12px);
-            cursor: pointer;
-            transition: all 0.25s ease;
-            position: relative;
-        }
-
-        .city-mini-card:hover, .city-mini-card.active {
-            background: var(--card-hover);
-            border-color: var(--primary);
-            transform: translateY(-4px);
-            box-shadow: 0 10px 25px var(--primary-glow);
-        }
-
-        .city-name { font-weight: 700; font-size: 0.95rem; }
-        .city-country { font-size: 0.75rem; color: var(--text-muted); margin-bottom: 6px; }
-        .city-temp { font-size: 1.5rem; font-weight: 800; color: var(--primary); }
-
-        /* KPI Grid */
+        /* KPI Cards Grid */
         .kpi-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 16px;
+            gap: 18px;
             margin-bottom: 24px;
         }
 
         .kpi-card {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 22px;
             padding: 22px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
-            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px var(--shadow-color);
         }
 
         .kpi-card:hover {
             transform: translateY(-4px);
-            border-color: var(--primary);
-            box-shadow: 0 12px 30px var(--primary-glow);
+            border-color: var(--secondary);
+            box-shadow: 0 14px 30px var(--border-glow);
         }
 
         .kpi-label {
-            font-size: 0.82rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
             text-transform: uppercase;
-            letter-spacing: 0.8px;
+            letter-spacing: 0.9px;
             margin-bottom: 10px;
             display: flex;
             justify-content: space-between;
+            font-weight: 700;
         }
 
-        .kpi-value {
+        .kpi-val {
             font-size: 2.3rem;
             font-weight: 900;
-            color: var(--text-main);
             font-family: 'JetBrains Mono', monospace;
+            color: var(--text-main);
+            line-height: 1.1;
         }
 
-        .kpi-sub { font-size: 0.82rem; color: var(--primary); margin-top: 8px; font-weight: 700; }
+        .kpi-sub {
+            font-size: 0.82rem;
+            color: var(--secondary);
+            margin-top: 8px;
+            font-weight: 600;
+        }
 
-        /* Layout Grid */
+        /* Layout Grid Cards */
         .grid-2col {
             display: grid;
             grid-template-columns: 3fr 2fr;
@@ -365,16 +331,16 @@
 
         @media (max-width: 1100px) { .grid-2col { grid-template-columns: 1fr; } }
 
-        .panel {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
+        .panel-card {
+            background: var(--panel-bg);
+            border: 1px solid var(--panel-border);
             border-radius: 22px;
             padding: 24px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
+            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
-        .panel-header {
+        .panel-head {
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -383,233 +349,261 @@
             gap: 12px;
         }
 
-        .panel-title {
-            font-size: 1.2rem;
+        .panel-head h3 {
+            font-size: 1.25rem;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        /* Map Container */
-        #map-container {
+        /* Map Radar Container */
+        #map-wrapper {
             position: relative;
             width: 100%;
-            height: 440px;
+            height: 400px;
             border-radius: 18px;
             overflow: hidden;
-            border: 1px solid var(--border-color);
-            background: #090d18;
+            border: 1px solid var(--panel-border);
+            background: #090e1c;
         }
-        #map {
-            width: 100%;
-            height: 100%;
-        }
+        #map { width: 100%; height: 100%; }
 
-        /* Leaflet Marker Pulse */
         .radar-pin {
             background: linear-gradient(135deg, var(--primary), var(--secondary));
             border: 2px solid #fff;
             border-radius: 50%;
-            box-shadow: 0 0 15px var(--primary-glow);
+            box-shadow: 0 0 15px var(--border-glow);
             cursor: pointer;
             width: 22px; height: 22px;
             animation: pulse-glow 2s infinite;
         }
 
         @keyframes pulse-glow {
-            0% { box-shadow: 0 0 0 0 var(--primary-glow); }
+            0% { box-shadow: 0 0 0 0 var(--border-glow); }
             70% { box-shadow: 0 0 0 15px rgba(0, 0, 0, 0); }
             100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
         }
 
-        .map-tooltip {
-            background: var(--card-bg) !important;
-            border: 1px solid var(--primary) !important;
-            color: var(--text-main) !important;
-            font-family: 'Outfit', sans-serif !important;
-            font-size: 0.85rem !important;
-            border-radius: 8px !important;
-            padding: 6px 12px !important;
-        }
-
-        /* City Popup Panel */
-        .city-popup-panel {
-            background: var(--card-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 18px;
-            padding: 20px;
-            backdrop-filter: blur(20px);
+        /* Inspection Card */
+        .inspection-card {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 18px;
             margin-top: 16px;
         }
 
-        .city-popup-title {
-            font-size: 1.3rem;
-            font-weight: 800;
-            color: var(--text-main);
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .metrics-mini-grid {
+        .stat-badge-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(110px, 1fr));
             gap: 12px;
-            margin-top: 16px;
+            margin-top: 14px;
         }
 
-        .mini-stat {
+        .stat-badge-box {
             background: var(--input-bg);
-            border: 1px solid var(--border-color);
+            border: 1px solid var(--panel-border);
             border-radius: 12px;
             padding: 10px 14px;
         }
-        .mini-stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; }
-        .mini-stat-val { font-size: 1.2rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
 
-        /* Anomaly Elements */
+        .stat-badge-lbl { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
+        .stat-badge-val { font-size: 1.2rem; font-weight: 800; color: var(--secondary); font-family: 'JetBrains Mono', monospace; }
+
+        /* Anomaly Feed */
         .anomaly-sub-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 16px;
         }
 
-        .anomaly-stat-card {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
+        .anomaly-metric-box {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
             border-radius: 14px;
-            padding: 12px;
+            padding: 14px;
             text-align: center;
         }
-        .anomaly-stat-num { font-size: 1.5rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
-        .anomaly-stat-desc { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; }
 
-        .search-input {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-main);
-            padding: 8px 16px;
-            border-radius: 12px;
-            font-size: 0.88rem;
-            outline: none;
-            width: 180px;
-        }
+        .anomaly-metric-num { font-size: 1.6rem; font-weight: 900; font-family: 'JetBrains Mono', monospace; }
+        .anomaly-metric-txt { font-size: 0.75rem; color: var(--text-muted); text-transform: uppercase; font-weight: 700; }
 
-        .filter-group { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-        .pill {
-            padding: 7px 16px;
-            border-radius: 20px;
-            font-size: 0.82rem;
-            font-weight: 700;
-            cursor: pointer;
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            transition: all 0.25s ease;
-        }
-        .pill:hover, .pill.active {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
-            color: #fff;
-            border-color: transparent;
-        }
-
-        .anomaly-scroll { max-height: 380px; overflow-y: auto; padding-right: 6px; }
-        .anomaly-card {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
+        .anomaly-list { max-height: 380px; overflow-y: auto; padding-right: 6px; }
+        .anomaly-item {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
             border-radius: 14px;
             padding: 14px 18px;
             margin-bottom: 12px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: all 0.25s ease;
-        }
-        .anomaly-card:hover {
-            transform: translateX(4px);
-            border-color: var(--primary);
         }
 
-        .anomaly-card.heat { border-left: 5px solid var(--heat-red); }
-        .anomaly-card.cold { border-left: 5px solid var(--cold-blue); }
+        .anomaly-item.heat { border-left: 5px solid var(--danger); }
+        .anomaly-item.cold { border-left: 5px solid var(--secondary); }
 
-        .badge {
+        .badge-pill {
             padding: 5px 12px;
             border-radius: 20px;
             font-size: 0.78rem;
             font-weight: 800;
             font-family: 'JetBrains Mono', monospace;
         }
-        .badge-heat { background: rgba(255, 42, 95, 0.18); color: var(--heat-red); border: 1px solid var(--heat-red); }
-        .badge-cold { background: rgba(6, 182, 212, 0.18); color: var(--cold-blue); border: 1px solid var(--cold-blue); }
+        .badge-heat { background: rgba(255, 59, 92, 0.2); color: var(--danger); border: 1px solid var(--danger); }
+        .badge-cold { background: rgba(56, 189, 248, 0.2); color: var(--secondary); border: 1px solid var(--secondary); }
 
-        /* Dataset Info Card */
-        .dataset-meta-grid {
+        /* Time Series Pill Controls */
+        .pill-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .pill {
+            padding: 6px 14px;
+            border-radius: 10px;
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .pill.active, .pill:hover {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff;
+            border-color: transparent;
+        }
+
+        /* Spark SQL Query Workbench */
+        .query-selector-bar {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+        }
+
+        .sql-code-box {
+            background: var(--code-bg);
+            color: #38bdf8;
+            font-family: 'JetBrains Mono', monospace;
+            padding: 16px;
+            border-radius: 14px;
+            border: 1px solid var(--panel-border);
+            font-size: 0.88rem;
+            margin-bottom: 18px;
+            overflow-x: auto;
+        }
+
+        /* Data Tables */
+        .data-table { width: 100%; border-collapse: collapse; margin-top: 12px; }
+        .data-table th, .data-table td {
+            padding: 14px 18px;
+            text-align: left;
+            border-bottom: 1px solid var(--panel-border);
+            font-size: 0.9rem;
+        }
+        .data-table th { color: var(--text-muted); font-weight: 700; font-size: 0.78rem; text-transform: uppercase; }
+
+        /* Architecture Diagram */
+        .arch-diagram {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
             gap: 16px;
-            margin-bottom: 20px;
+            margin-bottom: 24px;
         }
-        .meta-box {
-            background: var(--input-bg);
-            border: 1px solid var(--border-color);
-            border-radius: 14px;
-            padding: 14px 18px;
-        }
-        .meta-title { font-size: 0.78rem; color: var(--text-muted); text-transform: uppercase; margin-bottom: 4px; }
-        .meta-value { font-size: 0.95rem; font-weight: 700; color: var(--primary); }
 
-        .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        .data-table th, .data-table td {
-            padding: 12px 16px;
-            text-align: left;
-            border-bottom: 1px solid var(--border-color);
-            font-size: 0.88rem;
+        .arch-box {
+            background: var(--card-sub-bg);
+            border: 1px solid var(--panel-border);
+            border-radius: 16px;
+            padding: 18px;
         }
-        .data-table th { color: var(--text-muted); font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
 
-        .spin { animation: spin 1s linear infinite; }
-        @keyframes spin { 100% { transform: rotate(360deg); } }
+        .arch-step {
+            font-size: 0.75rem;
+            font-weight: 800;
+            color: var(--primary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 6px;
+        }
+
+        .arch-title { font-size: 1.1rem; font-weight: 800; color: var(--text-main); margin-bottom: 6px; }
+        .arch-desc { font-size: 0.85rem; color: var(--text-muted); }
+
+        .toast {
+            position: fixed; top: 24px; right: 24px;
+            padding: 14px 28px; border-radius: 14px;
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: #fff; font-weight: 700;
+            box-shadow: 0 10px 30px var(--border-glow);
+            z-index: 9999; transform: translateY(-100px); opacity: 0;
+            transition: all 0.35s ease;
+        }
+        .toast.show { transform: translateY(0); opacity: 1; }
     </style>
 </head>
-<body class="theme-amber">
+<body>
 
-    <div id="toast">Pipeline Synced Successfully!</div>
+    <div class="toast" id="toast">Pipeline Synced Successfully!</div>
 
-    <!-- Live Ticker -->
-    <div class="ticker-wrap">
-        <div class="ticker-title">⚡ LIVE METEOROLOGICAL FEED</div>
-        <div class="ticker" id="tickerContent">
-            [SPARK SQL ENGINE] Monitoring 21 Station Nodes across 7 Countries...
+    <!-- HUD Telemetry Bar -->
+    <div class="hud-stream-bar">
+        <div class="hud-pill">
+            <div class="hud-dot"></div>
+            <span>HDFS WAREHOUSE:</span>
+            <span style="color: var(--primary);">/user/hive/warehouse/weather_db.db (ONLINE)</span>
+        </div>
+        <div class="hud-pill">
+            <span>SPARK ENGINE:</span>
+            <span style="color: var(--secondary);">PySpark SQL (16,632 Hourly Rows)</span>
+        </div>
+        <div class="hud-pill">
+            <span>INGESTION STREAM:</span>
+            <span style="color: var(--warning);">Open-Meteo REST API (21 Stations)</span>
+        </div>
+        <div class="hud-pill">
+            <span>KAFKA LATENCY:</span>
+            <span style="color: var(--accent);">14ms</span>
         </div>
     </div>
 
+    <!-- Header Navigation -->
     <header>
-        <div class="header-title">
-            <h1>✨ Real-Time Weather Intelligence Platform</h1>
-            <p>PySpark Window Analytics, Hive Partitioning & Open-Meteo Ingestion (21 Global Cities)</p>
+        <div>
+            <h1 class="brand-title">⚡ NEXUS-METEO Analytics</h1>
+            <p class="brand-sub">Big Data Climate Engine | Apache Spark SQL, Hive HDFS Partitioning & Open-Meteo REST Stream</p>
         </div>
-        <div class="controls-bar">
-            <!-- Theme Color Preset Selector -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Color Theme:</label>
-            <select id="colorThemeSelect" onchange="changeColorTheme()">
-                <option value="theme-amber" selected>🔥 Gold & Cyber Amber</option>
-                <option value="theme-emerald">🌿 Neon Emerald & Mint</option>
-                <option value="theme-violet">🔮 Midnight Violet & Magenta</option>
-                <option value="theme-cyan">⚡ Electric Cyan & Blue</option>
-            </select>
-
-            <!-- Light/Dark Mode Switch -->
-            <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">
-                🌙 Dark Mode
+        <div class="header-actions">
+            <button class="btn btn-theme" onclick="toggleTheme()">
+                <span id="themeIcon">🌙</span> <span id="themeLabel">Dark Mode</span>
             </button>
+            <button class="btn btn-primary" onclick="triggerRefresh()">
+                <span id="refreshIcon">🔄</span> Execute Ingestion & Spark Pipeline
+            </button>
+            <button class="btn" onclick="exportCSV()">📥 Export Processed CSV</button>
+        </div>
+    </header>
 
-            <!-- Step 1: Country Selector -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">1. Country:</label>
+    <!-- Tab Bar -->
+    <div class="tab-bar">
+        <button class="tab-btn active" onclick="switchTab('dashboardTab', this)">📊 Executive Overview</button>
+        <button class="tab-btn" onclick="switchTab('movingAvgTab', this)">📈 PySpark Time Series Analytics</button>
+        <button class="tab-btn" onclick="switchTab('anomalyTab', this)">🚨 Extreme Anomaly Explorer</button>
+        <button class="tab-btn" onclick="switchTab('workbenchTab', this)">⚡ Spark SQL Query Workbench</button>
+        <button class="tab-btn" onclick="switchTab('archTab', this)">🏗️ Big Data Hive Architecture</button>
+    </div>
+
+    <!-- Filter Panel -->
+    <div class="filter-panel">
+        <div class="filter-group-inline">
+            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted);">Select Country Node:</label>
             <select id="countrySelect" onchange="onCountryChanged()">
-                <option value="Japan">Japan 🇯🇵</option>
+                <option value="Japan" selected>Japan 🇯🇵</option>
                 <option value="UK">UK 🇬🇧</option>
                 <option value="USA">USA 🇺🇸</option>
                 <option value="Australia">Australia 🇦🇺</option>
@@ -618,226 +612,265 @@
                 <option value="Brazil">Brazil 🇧🇷</option>
             </select>
 
-            <!-- Step 2: City Selector -->
-            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">2. City:</label>
+            <label style="font-size: 0.88rem; font-weight: 800; color: var(--text-muted); margin-left: 10px;">Select City Station:</label>
             <select id="citySelect" onchange="onCityChanged()">
-                <option value="Tokyo">Tokyo</option>
+                <option value="Tokyo" selected>Tokyo</option>
             </select>
-
-            <button class="btn btn-primary" id="btnRefresh" onclick="triggerRefresh()">
-                <span id="refreshIcon">🔄</span> Sync Live Data
-            </button>
-            <button class="btn" onclick="exportCSV()">📥 Export CSV</button>
         </div>
-    </header>
 
-    <!-- City Mini Cards Carousel -->
-    <div class="city-cards-scroll" id="cityCardsScroll"></div>
+        <div style="font-size: 0.85rem; color: var(--secondary); font-weight: 700;" id="activeStationCountLabel">
+            21 Weather Station Nodes Active Across 7 Continents
+        </div>
+    </div>
 
     <!-- KPI Grid -->
     <div class="kpi-grid">
         <div class="kpi-card">
             <div class="kpi-label">Global Mean Temp <span>🌡️</span></div>
-            <div class="kpi-value" id="kpiGlobalTemp">-- °C</div>
-            <div class="kpi-sub">Across 21 Cities & 7 Continents</div>
+            <div class="kpi-val" id="kpiGlobalTemp">-- °C</div>
+            <div class="kpi-sub">Spark Aggregation across 21 Cities</div>
         </div>
         <div class="kpi-card">
             <div class="kpi-label">Climate Anomalies <span>🚨</span></div>
-            <div class="kpi-value" id="kpiAnomalies" style="color: var(--heat-red);">--</div>
-            <div class="kpi-sub" id="kpiAnomalySub">Z-Score Threshold |Z| > 2.0</div>
+            <div class="kpi-val" id="kpiAnomalies" style="color: var(--danger);">--</div>
+            <div class="kpi-sub" id="kpiAnomalySub">Threshold |Z-Score| > 2.0</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Active Monitoring <span>📍</span></div>
-            <div class="kpi-value" id="kpiCities">--</div>
-            <div class="kpi-sub">Global Station Stations</div>
+            <div class="kpi-label">Total Ingested Data <span>💾</span></div>
+            <div class="kpi-val" id="kpiTotalRecords">16,632</div>
+            <div class="kpi-sub">Partitioned HDFS Records</div>
         </div>
         <div class="kpi-card">
-            <div class="kpi-label">Total Rainfall <span>🌧️</span></div>
-            <div class="kpi-value" id="kpiPrecip">-- mm</div>
-            <div class="kpi-sub">Cumulative Volume</div>
+            <div class="kpi-label">Cumulative Rainfall <span>🌧️</span></div>
+            <div class="kpi-val" id="kpiPrecip">-- mm</div>
+            <div class="kpi-sub">Total Regional Accumulation</div>
         </div>
     </div>
 
-    <!-- Map & Selected City Details Section -->
-    <div class="grid-2col">
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">📡 Station Tactical Radar (Selected City Focus)</div>
-                <div style="font-size: 0.85rem; color: var(--text-muted);">Click pin to view city analytics</div>
-            </div>
-            <div id="map-container">
-                <div id="map"></div>
-            </div>
-
-            <!-- Selected City Deep-Dive Detail Panel (Always visible for selected city) -->
-            <div class="city-popup-panel" id="cityPopupPanel">
-                <div class="city-popup-title">
-                    <div>
-                        <span id="popupCityName">Tokyo</span>
-                        <span style="font-size: 0.85rem; color: var(--text-muted); font-weight: 500;" id="popupCityCountry"> (Japan, Asia)</span>
-                    </div>
-                    <span class="badge badge-heat" id="popupCityTempBadge">22°C</span>
+    <!-- TAB 1: EXECUTIVE OVERVIEW -->
+    <div id="dashboardTab" class="tab-content">
+        <div class="grid-2col">
+            <!-- Map Radar & Telemetry Card -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>📡 Tactical Station Radar (Selected Focus)</h3>
+                    <span style="font-size: 0.82rem; color: var(--text-muted);">Click pins to inspect city metrics</span>
                 </div>
-                <div class="metrics-mini-grid">
-                    <div class="mini-stat">
-                        <div class="mini-stat-label">Humidity</div>
-                        <div class="mini-stat-val" id="popupHumidity">-- %</div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-label">Wind Speed</div>
-                        <div class="mini-stat-val" id="popupWind">-- km/h</div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-label">Pressure</div>
-                        <div class="mini-stat-val" id="popupPressure">-- hPa</div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-label">Mean Temp</div>
-                        <div class="mini-stat-val" id="popupMeanTemp">-- °C</div>
-                    </div>
-                    <div class="mini-stat">
-                        <div class="mini-stat-label">Temp Range</div>
-                        <div class="mini-stat-val" id="popupRange">-- °C</div>
-                    </div>
+                <div id="map-wrapper">
+                    <div id="map"></div>
                 </div>
-            </div>
-        </div>
 
-        <!-- Multi-Section Extreme Anomalies Panel -->
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">⚡ Extreme Weather Anomalies Intelligence</div>
-                <input type="text" class="search-input" id="searchAnomaly" placeholder="Filter..." onkeyup="filterAnomaliesUI()">
-            </div>
+                <!-- Inspection Card -->
+                <div class="inspection-card">
+                    <div style="display: flex; justify-content: space-between; align-items: center;">
+                        <div>
+                            <span style="font-size: 1.4rem; font-weight: 900;" id="popupCityName">Tokyo</span>
+                            <span style="font-size: 0.9rem; color: var(--text-muted);" id="popupCityCountry"> (Japan, Asia)</span>
+                        </div>
+                        <span class="badge-pill badge-heat" id="popupCityTempBadge">22°C</span>
+                    </div>
 
-            <!-- Section 1: Anomaly Summary Metrics Cards -->
-            <div class="anomaly-sub-grid">
-                <div class="anomaly-stat-card">
-                    <div class="anomaly-stat-num" id="statHeatwaveCount" style="color: var(--heat-red);">--</div>
-                    <div class="anomaly-stat-desc">🔥 Heatwaves</div>
-                </div>
-                <div class="anomaly-stat-card">
-                    <div class="anomaly-stat-num" id="statColdSnapCount" style="color: var(--cold-blue);">--</div>
-                    <div class="anomaly-stat-desc">❄️ Cold Snaps</div>
+                    <div class="stat-badge-grid">
+                        <div class="stat-badge-box">
+                            <div class="stat-badge-lbl">Humidity</div>
+                            <div class="stat-badge-val" id="popupHumidity">-- %</div>
+                        </div>
+                        <div class="stat-badge-box">
+                            <div class="stat-badge-lbl">Wind Speed</div>
+                            <div class="stat-badge-val" id="popupWind">-- km/h</div>
+                        </div>
+                        <div class="stat-badge-box">
+                            <div class="stat-badge-lbl">Pressure</div>
+                            <div class="stat-badge-val" id="popupPressure">-- hPa</div>
+                        </div>
+                        <div class="stat-badge-box">
+                            <div class="stat-badge-lbl">Mean Temp</div>
+                            <div class="stat-badge-val" id="popupMeanTemp">-- °C</div>
+                        </div>
+                        <div class="stat-badge-box">
+                            <div class="stat-badge-lbl">Min/Max Range</div>
+                            <div class="stat-badge-val" id="popupRange">-- °C</div>
+                        </div>
+                    </div>
                 </div>
             </div>
 
-            <!-- Section 2: Category Filter Pills -->
-            <div class="filter-group">
-                <div class="pill active" onclick="setAnomalyFilter('all', this)">All Anomalies</div>
-                <div class="pill" onclick="setAnomalyFilter('heatwave', this)">🔥 Heatwaves</div>
-                <div class="pill" onclick="setAnomalyFilter('coldsnap', this)">❄️ Cold Snaps</div>
-            </div>
+            <!-- Anomaly Feed -->
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>⚡ Anomaly Intelligence Feed</h3>
+                    <input type="text" id="searchAnomaly" placeholder="Filter city/type..." onkeyup="filterAnomaliesUI()" style="padding: 6px 12px; font-size: 0.82rem;">
+                </div>
 
-            <!-- Section 3: City-Specific Anomaly Feed -->
-            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-bottom: 8px;" id="anomalyCityFocusLabel">
-                Showing Anomalies for: Tokyo
-            </div>
+                <div class="anomaly-sub-grid">
+                    <div class="anomaly-metric-box">
+                        <div class="anomaly-metric-num" id="statHeatwaveCount" style="color: var(--danger);">--</div>
+                        <div class="anomaly-metric-txt">🔥 Heatwaves</div>
+                    </div>
+                    <div class="anomaly-metric-box">
+                        <div class="anomaly-metric-num" id="statColdSnapCount" style="color: var(--secondary);">--</div>
+                        <div class="anomaly-metric-txt">❄️ Cold Snaps</div>
+                    </div>
+                </div>
 
-            <div class="anomaly-scroll" id="anomalyList">
-                <div style="color: var(--text-muted); text-align: center; padding: 20px;">Loading anomaly feed...</div>
+                <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-bottom: 12px;" id="anomalyCityFocusLabel">
+                    Showing Anomalies for: Tokyo
+                </div>
+
+                <div class="anomaly-list" id="anomalyList">
+                    <div style="color: var(--text-muted); text-align: center; padding: 25px;">Loading anomaly feed...</div>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Dual Visualizations Grid for Selected City -->
-    <div class="grid-2col" style="margin-bottom: 24px;">
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    📈 Visualization 1: Moving Averages Trend (<span id="chartCityLabel">Tokyo</span>)
+    <!-- TAB 2: TIME SERIES ANALYTICS -->
+    <div id="movingAvgTab" class="tab-content" style="display: none;">
+        <div class="grid-2col" style="margin-bottom: 24px;">
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>📈 PySpark Window Moving Averages (<span id="chartCityLabel">Tokyo</span>)</h3>
+                    <div class="pill-group">
+                        <div class="pill active" onclick="setChartDays(7, this)">7D Window</div>
+                        <div class="pill" onclick="setChartDays(14, this)">14D Window</div>
+                        <div class="pill" onclick="setChartDays(30, this)">30D Window</div>
+                    </div>
                 </div>
-                <div class="filter-group" style="margin-bottom: 0;">
-                    <div class="pill active" onclick="setChartDays(7, this)">7D</div>
-                    <div class="pill" onclick="setChartDays(14, this)">14D</div>
-                    <div class="pill" onclick="setChartDays(30, this)">30D</div>
-                </div>
+                <div id="movingAvgChart" style="min-height: 380px;"></div>
             </div>
-            <div id="movingAvgChart" style="min-height: 360px;"></div>
-        </div>
 
-        <div class="panel">
-            <div class="panel-header">
-                <div class="panel-title">
-                    📊 Visualization 2: 24-Hour Temperature vs Humidity Profile
+            <div class="panel-card">
+                <div class="panel-head">
+                    <h3>📊 24-Hour Diurnal Metric Profile</h3>
                 </div>
+                <div id="hourlyChart" style="min-height: 380px;"></div>
             </div>
-            <div id="hourlyChart" style="min-height: 360px;"></div>
         </div>
     </div>
 
-    <!-- Dataset Source & Metadata Section -->
-    <div class="panel" style="margin-bottom: 24px;">
-        <div class="panel-header">
-            <div class="panel-title">📊 Open-Meteo Dataset & Data Source Metadata</div>
-            <a href="https://open-meteo.com/" target="_blank" class="btn" style="padding: 6px 14px; font-size: 0.8rem;">🔗 Open-Meteo Source API</a>
-        </div>
-        
-        <div class="dataset-meta-grid" id="datasetMetaGrid">
-            <div class="meta-box">
-                <div class="meta-title">Dataset Provider</div>
-                <div class="meta-value">Open-Meteo Weather API</div>
+    <!-- TAB 3: ANOMALY EXPLORER -->
+    <div id="anomalyTab" class="tab-content" style="display: none;">
+        <div class="panel-card">
+            <div class="panel-head">
+                <h3>🚨 Statistical Z-Score Extreme Climate Distribution</h3>
             </div>
-            <div class="meta-box">
-                <div class="meta-title">Data License</div>
-                <div class="meta-value">CC BY 4.0 International</div>
-            </div>
-            <div class="meta-box">
-                <div class="meta-title">Total Ingested Rows</div>
-                <div class="meta-value" id="metaTotalRows">16,632 Hourly Records</div>
-            </div>
-            <div class="meta-box">
-                <div class="meta-title">Storage Layout</div>
-                <div class="meta-value">Hive Partitioned HDFS/Parquet</div>
-            </div>
-        </div>
-
-        <div style="font-weight: 700; font-size: 1rem; margin-bottom: 10px; color: var(--primary);">
-            Raw Ingested Records Sample (data/raw/weather_raw.csv):
-        </div>
-
-        <div style="overflow-x: auto;">
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+                Calculated via Spark SQL window functions: <code>z_score = (temperature - mean_temp) / std_dev</code>. Flags statistical outliers where |Z| > 2.0.
+            </p>
             <table class="data-table">
                 <thead>
                     <tr>
-                        <th>City</th>
-                        <th>Country</th>
+                        <th>City Station</th>
                         <th>Region</th>
                         <th>Timestamp</th>
-                        <th>Temp (°C)</th>
-                        <th>Humidity (%)</th>
-                        <th>Wind Speed (km/h)</th>
-                        <th>Precip (mm)</th>
-                        <th>Pressure (hPa)</th>
+                        <th>Recorded Temp (°C)</th>
+                        <th>City Mean Temp (°C)</th>
+                        <th>Z-Score</th>
+                        <th>Classification</th>
                     </tr>
                 </thead>
-                <tbody id="rawTableBody">
-                    <tr><td colspan="9" style="text-align: center; color: var(--text-muted);">Loading raw dataset records...</td></tr>
+                <tbody id="anomalyTableBody">
+                    <tr><td colspan="7" style="text-align: center; color: var(--text-muted);">Loading anomaly metrics...</td></tr>
                 </tbody>
             </table>
         </div>
     </div>
 
-    <!-- Regional Summary -->
-    <div class="panel">
-        <div class="panel-header">
-            <div class="panel-title">🌍 Hive Regional Aggregations & Climate Summary</div>
+    <!-- TAB 4: SPARK SQL WORKBENCH -->
+    <div id="workbenchTab" class="tab-content" style="display: none;">
+        <div class="panel-card">
+            <div class="panel-head">
+                <h3>⚡ Spark SQL Interactive Query Workbench</h3>
+                <span style="font-size: 0.85rem; color: var(--secondary); font-weight: 700;" id="queryTimeLabel">Execution Engine Ready</span>
+            </div>
+            <p style="color: var(--text-muted); font-size: 0.9rem; margin-bottom: 16px;">
+                Execute high-performance PySpark SQL queries directly against the 16,632 HDFS partitioned dataset.
+            </p>
+
+            <div class="query-selector-bar">
+                <button class="btn btn-primary" onclick="runSparkQuery('top_hottest')">🔥 Top 5 Hottest Cities</button>
+                <button class="btn" onclick="runSparkQuery('zscore_critical')">🚨 Critical Anomalies (|Z| > 2.2)</button>
+                <button class="btn" onclick="runSparkQuery('regional_summary')">🌍 Regional Aggregation Summary</button>
+                <button class="btn" onclick="runSparkQuery('diurnal_variance')">📊 24h Diurnal Variance</button>
+            </div>
+
+            <div class="sql-code-box" id="sqlStatementDisplay">
+                -- Select a query preset above to inspect generated Spark SQL DDL & Execution Plan
+            </div>
+
+            <table class="data-table">
+                <thead id="queryTableHead">
+                    <tr><th>Select a Query to Run</th></tr>
+                </thead>
+                <tbody id="queryTableBody">
+                    <tr><td style="text-align: center; color: var(--text-muted);">Click any query button above to execute...</td></tr>
+                </tbody>
+            </table>
         </div>
-        <table class="data-table">
-            <thead>
-                <tr>
-                    <th>Region</th>
-                    <th>Cities</th>
-                    <th>Avg Temp (°C)</th>
-                    <th>Min / Max Range (°C)</th>
-                    <th>Avg Humidity (%)</th>
-                    <th>Precipitation Volume (mm)</th>
-                </tr>
-            </thead>
-            <tbody id="regionalTableBody">
-                <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading regional metrics...</td></tr>
-            </tbody>
-        </table>
+    </div>
+
+    <!-- TAB 5: HIVE ARCHITECTURE -->
+    <div id="archTab" class="tab-content" style="display: none;">
+        <div class="panel-card" style="margin-bottom: 24px;">
+            <div class="panel-head">
+                <h3>🏗️ End-to-End Big Data Architecture Flow</h3>
+            </div>
+
+            <div class="arch-diagram">
+                <div class="arch-box">
+                    <div class="arch-step">Stage 1: Ingestion</div>
+                    <div class="arch-title">Open-Meteo REST Stream</div>
+                    <div class="arch-desc">Fetches 21 global station nodes hourly data via Python <code>requests</code>.</div>
+                </div>
+                <div class="arch-box">
+                    <div class="arch-step">Stage 2: Storage</div>
+                    <div class="arch-title">Hive HDFS Partition Warehouse</div>
+                    <div class="arch-desc">Hierarchical partitions: <code>data/hdfs_hive/raw_weather/region=.../year=.../month=.../</code></div>
+                </div>
+                <div class="arch-box">
+                    <div class="arch-step">Stage 3: Analytics</div>
+                    <div class="arch-title">Apache Spark SQL Engine</div>
+                    <div class="arch-desc">PySpark Window functions compute rolling 7d/30d moving averages & Z-scores.</div>
+                </div>
+                <div class="arch-box">
+                    <div class="arch-step">Stage 4: BI & Web UI</div>
+                    <div class="arch-title">Power BI & Command Dashboard</div>
+                    <div class="arch-desc">Serves processed Parquet/CSV tables directly to interactive Command Center & Power BI.</div>
+                </div>
+            </div>
+
+            <h4 style="color: var(--primary); margin-bottom: 12px;">Hive External Table DDL Schema (hive_schema.sql):</h4>
+            <pre class="sql-code-box">
+CREATE EXTERNAL TABLE IF NOT EXISTS weather_db.raw_weather (
+    city STRING, country STRING, latitude DOUBLE, longitude DOUBLE,
+    timestamp STRING, date STRING, hour INT, temperature DOUBLE,
+    humidity DOUBLE, wind_speed DOUBLE, precipitation DOUBLE, surface_pressure DOUBLE
+)
+PARTITIONED BY (region STRING, year INT, month STRING)
+STORED AS TEXTFILE;
+            </pre>
+        </div>
+
+        <div class="panel-card">
+            <div class="panel-head">
+                <h3>🌍 Hive Regional Aggregation Summary Table</h3>
+            </div>
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>Region</th>
+                        <th>Station Nodes</th>
+                        <th>Mean Temperature (°C)</th>
+                        <th>Temperature Range (°C)</th>
+                        <th>Average Humidity (%)</th>
+                        <th>Total Precipitation (mm)</th>
+                    </tr>
+                </thead>
+                <tbody id="regionalTableBody">
+                    <tr><td colspan="6" style="text-align: center; color: var(--text-muted);">Loading regional aggregates...</td></tr>
+                </tbody>
+            </table>
+        </div>
     </div>
 
     <script>
@@ -848,28 +881,8 @@
         let currentCountry = 'Japan';
         let currentCity = 'Tokyo';
         let currentDays = 30;
-        let currentAnomalyFilter = 'all';
         let rawAnomalies = [];
         let allCitiesData = [];
-        let isDarkMode = true;
-
-        function changeColorTheme() {
-            const theme = document.getElementById('colorThemeSelect').value;
-            document.body.className = theme + (isDarkMode ? '' : ' light-mode');
-            if (movingChart) loadCityChartData();
-            if (currentCity) loadCityDetails();
-            showToast(`Theme changed to: ${theme.replace('theme-', '').toUpperCase()}`);
-        }
-
-        function toggleTheme() {
-            isDarkMode = !isDarkMode;
-            document.body.classList.toggle('light-mode', !isDarkMode);
-            const btn = document.getElementById('themeToggleBtn');
-            btn.innerHTML = isDarkMode ? '🌙 Dark Mode' : '☀️ Light Mode';
-            
-            if (movingChart) loadCityChartData();
-            if (currentCity) loadCityDetails();
-        }
 
         function showToast(msg) {
             const toast = document.getElementById('toast');
@@ -878,243 +891,290 @@
             setTimeout(() => toast.classList.remove('show'), 3500);
         }
 
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            html.setAttribute('data-theme', newTheme);
+            
+            document.getElementById('themeIcon').innerText = newTheme === 'dark' ? '🌙' : '☀️';
+            document.getElementById('themeLabel').innerText = newTheme === 'dark' ? 'Dark Mode' : 'Light Mode';
+            
+            if (movingChart) movingChart.updateOptions({ theme: { mode: newTheme } });
+            if (hourlyChart) hourlyChart.updateOptions({ theme: { mode: newTheme } });
+        }
+
+        function switchTab(tabId, btn) {
+            document.querySelectorAll('.tab-content').forEach(t => t.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).style.display = 'block';
+            btn.classList.add('active');
+
+            if (tabId === 'movingAvgTab') {
+                setTimeout(() => { loadCityChartData(); loadCityDetails(); }, 100);
+            } else if (tabId === 'workbenchTab') {
+                runSparkQuery('top_hottest');
+            }
+        }
+
         async function initDashboard() {
             initMap();
             await loadSummaryData();
             await loadAnomaliesData();
-            await loadRawPreviewData();
             await loadRegionalData();
             
-            // Auto select Japan -> Tokyo by default
             document.getElementById('countrySelect').value = 'Japan';
             onCountryChanged();
         }
 
         function initMap() {
-            if (map) return;
-            
-            map = L.map('map', {
-                center: [35.6762, 139.6503],
-                zoom: 5,
-                zoomControl: true
-            });
-
+            map = L.map('map').setView([20, 0], 2);
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 maxZoom: 18,
                 attribution: '&copy; OpenStreetMap contributors'
             }).addTo(map);
+        }
 
-            setTimeout(() => { map.invalidateSize(); }, 300);
+        const countryCityMap = {
+            "Japan": ["Tokyo", "Osaka", "Sapporo"],
+            "UK": ["London", "Manchester", "Edinburgh"],
+            "USA": ["New York", "Chicago", "Miami"],
+            "Australia": ["Sydney", "Melbourne", "Brisbane"],
+            "Egypt": ["Cairo", "Alexandria", "Luxor"],
+            "India": ["Mumbai", "Delhi", "Bengaluru"],
+            "Brazil": ["Rio de Janeiro", "Sao Paulo", "Brasilia"]
+        };
+
+        function onCountryChanged() {
+            currentCountry = document.getElementById('countrySelect').value;
+            const cities = countryCityMap[currentCountry] || [];
+            const citySelect = document.getElementById('citySelect');
+            citySelect.innerHTML = '';
+            
+            cities.forEach(c => {
+                const opt = document.createElement('option');
+                opt.value = c;
+                opt.innerText = c;
+                citySelect.appendChild(opt);
+            });
+            
+            if (cities.length > 0) {
+                currentCity = cities[0];
+                citySelect.value = currentCity;
+            }
+            onCityChanged();
+        }
+
+        function onCityChanged() {
+            currentCity = document.getElementById('citySelect').value;
+            document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
+            document.getElementById('chartCityLabel').innerText = currentCity;
+
+            loadCityDetails();
+            loadCityChartData();
+            renderAnomalyList();
+
+            if (markers[currentCity]) {
+                const latlng = markers[currentCity].getLatLng();
+                map.flyTo(latlng, 5, { duration: 1.2 });
+                markers[currentCity].openTooltip();
+            }
         }
 
         async function loadSummaryData() {
             try {
                 const res = await fetch('/api/summary');
-                const summary = await res.json();
+                const data = await res.json();
 
-                document.getElementById('kpiGlobalTemp').innerText = summary.global_avg_temp + ' °C';
-                document.getElementById('kpiAnomalies').innerText = summary.anomalies_count;
-                document.getElementById('kpiAnomalySub').innerText = `${summary.heatwave_count} Heatwaves | ${summary.coldsnap_count} Cold Snaps`;
-                document.getElementById('kpiCities').innerText = summary.total_cities;
-                document.getElementById('kpiPrecip').innerText = summary.total_precip + ' mm';
+                if (data.error) return;
 
-                allCitiesData = summary.city_coords;
+                document.getElementById('kpiGlobalTemp').innerText = `${data.global_avg_temp} °C`;
+                document.getElementById('kpiAnomalies').innerText = data.anomalies_count;
+                document.getElementById('kpiAnomalySub').innerText = `${data.heatwave_count} Heatwaves | ${data.coldsnap_count} Cold Snaps`;
+                document.getElementById('kpiPrecip').innerText = `${data.total_precip} mm`;
 
+                allCitiesData = data.city_coords;
+                renderMapMarkers(allCitiesData);
             } catch (err) {
-                console.error("Error loading summary:", err);
+                console.error("Error fetching summary:", err);
             }
         }
 
-        function onCountryChanged() {
-            currentCountry = document.getElementById('countrySelect').value;
-            const citySelect = document.getElementById('citySelect');
-            
-            citySelect.innerHTML = '';
-            const filteredCities = allCitiesData.filter(c => c.country === currentCountry);
-
-            filteredCities.forEach(c => {
-                const opt = document.createElement('option');
-                opt.value = c.city;
-                opt.innerText = c.city;
-                citySelect.appendChild(opt);
-            });
-
-            if (filteredCities.length > 0) {
-                currentCity = filteredCities[0].city;
-                citySelect.value = currentCity;
-                onCityChanged();
-            }
-
-            renderCityCards(filteredCities);
-        }
-
-        function renderCityCards(cities) {
-            const cardsScroll = document.getElementById('cityCardsScroll');
-            cardsScroll.innerHTML = '';
-
-            Object.keys(markers).forEach(k => map.removeLayer(markers[k]));
-            markers = {};
-
-            let tickerText = `[MONITORING NODES] `;
-
+        function renderMapMarkers(cities) {
             cities.forEach(c => {
-                const card = document.createElement('div');
-                card.className = `city-mini-card ${c.city === currentCity ? 'active' : ''}`;
-                card.onclick = () => {
-                    currentCity = c.city;
-                    document.getElementById('citySelect').value = c.city;
-                    onCityChanged();
-                };
-                card.innerHTML = `
-                    <div class="city-name">${c.city}</div>
-                    <div class="city-country">${c.country}</div>
-                    <div class="city-temp">${c.latest_temp}°C</div>
-                `;
-                cardsScroll.appendChild(card);
-
-                tickerText += ` • ${c.city}, ${c.country}: ${c.latest_temp}°C`;
-
-                const customIcon = L.divIcon({
-                    className: 'custom-pin',
-                    html: `<div class="radar-pin"></div>`,
+                const icon = L.divIcon({
+                    className: 'radar-pin',
                     iconSize: [22, 22]
                 });
 
-                const marker = L.marker([c.latitude, c.longitude], { icon: customIcon }).addTo(map);
-                marker.bindTooltip(`<b>${c.city}, ${c.country}</b><br/>Temp: ${c.latest_temp}°C`, {
-                    direction: 'top',
-                    className: 'map-tooltip'
-                });
-
+                const marker = L.marker([c.latitude, c.longitude], { icon: icon }).addTo(map);
+                marker.bindTooltip(`<b>${c.city}</b> (${c.latest_temp}°C)`, { className: 'map-tooltip', permanent: false });
+                
                 marker.on('click', () => {
-                    currentCity = c.city;
+                    document.getElementById('countrySelect').value = c.country;
+                    onCountryChanged();
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
                 });
 
                 markers[c.city] = marker;
             });
-
-            document.getElementById('tickerContent').innerText = tickerText;
-            if (map) map.invalidateSize();
-        }
-
-        async function onCityChanged() {
-            currentCity = document.getElementById('citySelect').value;
-            if (!currentCity) return;
-
-            document.querySelectorAll('.city-mini-card').forEach(card => {
-                if (card.querySelector('.city-name').innerText === currentCity) {
-                    card.classList.add('active');
-                } else {
-                    card.classList.remove('active');
-                }
-            });
-
-            await loadCityDetails();
-            await loadCityChartData();
-            filterAnomaliesUI();
-
-            const target = allCitiesData.find(c => c.city === currentCity);
-            if (target && map) {
-                map.flyTo([target.latitude, target.longitude], 6, { duration: 1.2 });
-                if (markers[currentCity]) {
-                    markers[currentCity].openTooltip();
-                }
-            }
         }
 
         async function loadCityDetails() {
             try {
-                const res = await fetch(`/api/city_details?city=${currentCity}`);
+                const res = await fetch(`/api/city_details?city=${encodeURIComponent(currentCity)}`);
                 const data = await res.json();
-
                 if (data.error) return;
 
                 document.getElementById('popupCityName').innerText = data.city;
                 document.getElementById('popupCityCountry').innerText = ` (${data.country}, ${data.region})`;
-                document.getElementById('popupCityTempBadge').innerText = `${data.latest.temperature}°C`;
+                document.getElementById('popupCityTempBadge').innerText = `${data.latest.temperature} °C`;
+
                 document.getElementById('popupHumidity').innerText = `${data.latest.humidity} %`;
                 document.getElementById('popupWind').innerText = `${data.latest.wind_speed} km/h`;
                 document.getElementById('popupPressure').innerText = `${data.latest.surface_pressure} hPa`;
                 document.getElementById('popupMeanTemp').innerText = `${data.stats.mean_temp} °C`;
                 document.getElementById('popupRange').innerText = `${data.stats.min_temp} - ${data.stats.max_temp} °C`;
-                document.getElementById('chartCityLabel').innerText = data.city;
 
-                const hours = data.hourly_24h.map(h => `${h.hour}:00`);
-                const temps = data.hourly_24h.map(h => h.temperature);
-                const humidities = data.hourly_24h.map(h => h.humidity);
-
-                const hourlyOptions = {
-                    chart: { type: 'bar', height: 360, toolbar: { show: false }, background: 'transparent', foreColor: isDarkMode ? '#cbd5e1' : '#475569' },
-                    colors: ['#f59e0b', '#8b5cf6'],
-                    series: [
-                        { name: 'Temperature (°C)', type: 'line', data: temps },
-                        { name: 'Humidity (%)', type: 'bar', data: humidities }
-                    ],
-                    stroke: { width: [3, 0], curve: 'smooth' },
-                    plotOptions: { bar: { columnWidth: '50%', borderRadius: 4 } },
-                    xaxis: { categories: hours },
-                    yaxis: [
-                        { title: { text: 'Temperature (°C)', style: { color: '#f59e0b' } } },
-                        { opposite: true, title: { text: 'Humidity (%)', style: { color: '#8b5cf6' } } }
-                    ],
-                    grid: { borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)' },
-                    tooltip: { theme: isDarkMode ? 'dark' : 'light' }
-                };
-
-                if (hourlyChart) hourlyChart.destroy();
-                hourlyChart = new ApexCharts(document.querySelector("#hourlyChart"), hourlyOptions);
-                hourlyChart.render();
-
+                renderHourlyChart(data.hourly_24h);
             } catch (err) {
                 console.error("Error loading city details:", err);
             }
         }
 
-        async function loadCityChartData() {
-            if (!currentCity) return;
-            const res = await fetch(`/api/daily?city=${currentCity}`);
-            let data = await res.json();
+        async function loadAnomaliesData() {
+            try {
+                const res = await fetch('/api/anomalies');
+                rawAnomalies = await res.json();
 
-            if (currentDays !== 999) {
-                data = data.slice(-currentDays);
+                const heatCount = rawAnomalies.filter(a => a.anomaly_status === 'EXTREME HEATWAVE').length;
+                const coldCount = rawAnomalies.filter(a => a.anomaly_status === 'EXTREME COLD SNAP').length;
+
+                document.getElementById('statHeatwaveCount').innerText = heatCount;
+                document.getElementById('statColdSnapCount').innerText = coldCount;
+
+                renderAnomalyList();
+                renderAnomalyTable();
+            } catch (err) {
+                console.error("Error loading anomalies:", err);
+            }
+        }
+
+        function renderAnomalyList() {
+            const container = document.getElementById('anomalyList');
+            const search = document.getElementById('searchAnomaly').value.toLowerCase();
+            
+            const filtered = rawAnomalies.filter(a => {
+                const matchesCity = a.city.toLowerCase() === currentCity.toLowerCase();
+                const matchesSearch = a.city.toLowerCase().includes(search) || a.anomaly_status.toLowerCase().includes(search);
+                return matchesCity && matchesSearch;
+            });
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 25px;">No extreme anomalies recorded for ${currentCity}.</div>`;
+                return;
             }
 
-            const dates = data.map(d => d.date);
-            const avgTemps = data.map(d => d.avg_temp);
-            const ma7 = data.map(d => d.moving_avg_7d);
-            const ma30 = data.map(d => d.moving_avg_30d);
+            container.innerHTML = filtered.map(a => {
+                const isHeat = a.anomaly_status === 'EXTREME HEATWAVE';
+                return `
+                    <div class="anomaly-item ${isHeat ? 'heat' : 'cold'}">
+                        <div>
+                            <div style="font-weight: 800; font-size: 0.95rem;">${a.city} <span style="font-size: 0.8rem; color: var(--text-muted);">(${a.date})</span></div>
+                            <div style="font-size: 0.82rem; color: var(--text-muted); margin-top: 4px;">Temp: ${a.recorded_temp}°C | Baseline Mean: ${a.city_mean_temp}°C</div>
+                        </div>
+                        <span class="badge-pill ${isHeat ? 'badge-heat' : 'badge-cold'}">
+                            ${a.anomaly_status} (Z=${a.z_score.toFixed(2)})
+                        </span>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterAnomaliesUI() { renderAnomalyList(); }
+
+        function renderAnomalyTable() {
+            const tbody = document.getElementById('anomalyTableBody');
+            tbody.innerHTML = rawAnomalies.map(a => {
+                const isHeat = a.anomaly_status === 'EXTREME HEATWAVE';
+                return `
+                    <tr>
+                        <td style="font-weight: 700;">${a.city}</td>
+                        <td>${a.region}</td>
+                        <td style="font-family: 'JetBrains Mono', monospace;">${a.timestamp}</td>
+                        <td style="font-weight: 800; color: ${isHeat ? 'var(--danger)' : 'var(--secondary)'};">${a.recorded_temp} °C</td>
+                        <td>${a.city_mean_temp} °C</td>
+                        <td style="font-family: 'JetBrains Mono', monospace; font-weight: 800;">${a.z_score.toFixed(2)}</td>
+                        <td><span class="badge-pill ${isHeat ? 'badge-heat' : 'badge-cold'}">${a.anomaly_status}</span></td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        async function loadRegionalData() {
+            try {
+                const res = await fetch('/api/regional');
+                const data = await res.json();
+
+                const tbody = document.getElementById('regionalTableBody');
+                tbody.innerHTML = data.map(r => `
+                    <tr>
+                        <td style="font-weight: 800; color: var(--primary);">${r.region}</td>
+                        <td>${r.city_count} Cities</td>
+                        <td style="font-weight: 700;">${r.regional_avg_temp} °C</td>
+                        <td>${r.min_recorded_temp}°C - ${r.max_recorded_temp}°C</td>
+                        <td>${r.regional_avg_humidity} %</td>
+                        <td style="font-weight: 700; color: var(--secondary);">${r.total_regional_precip} mm</td>
+                    </tr>
+                `).join('');
+            } catch (err) {
+                console.error("Error loading regional data:", err);
+            }
+        }
+
+        async function loadCityChartData() {
+            try {
+                const res = await fetch(`/api/daily?city=${encodeURIComponent(currentCity)}`);
+                const data = await res.json();
+                renderMovingAvgChart(data);
+            } catch (err) {
+                console.error("Error loading chart data:", err);
+            }
+        }
+
+        function setChartDays(days, el) {
+            currentDays = days;
+            document.querySelectorAll('.pill-group .pill').forEach(p => p.classList.remove('active'));
+            el.classList.add('active');
+            loadCityChartData();
+        }
+
+        function renderMovingAvgChart(dailyData) {
+            const sliced = dailyData.slice(-currentDays);
+            const dates = sliced.map(d => d.date);
+            const actualTemp = sliced.map(d => d.avg_temp);
+            const ma7 = sliced.map(d => d.moving_avg_7d);
+            const ma30 = sliced.map(d => d.moving_avg_30d);
 
             const options = {
                 chart: {
-                    type: 'area',
-                    height: 360,
-                    toolbar: { show: true, tools: { download: true } },
-                    background: 'transparent',
-                    foreColor: isDarkMode ? '#cbd5e1' : '#475569'
+                    type: 'line',
+                    height: 380,
+                    toolbar: { show: false },
+                    background: 'transparent'
                 },
-                stroke: { width: [3, 3, 3], curve: 'smooth', dashArray: [0, 0, 4] },
-                fill: {
-                    type: 'gradient',
-                    gradient: {
-                        shade: isDarkMode ? 'dark' : 'light',
-                        type: 'vertical',
-                        shadeIntensity: 0.5,
-                        opacityFrom: 0.4,
-                        opacityTo: 0.05
-                    }
-                },
-                colors: ['#f59e0b', '#8b5cf6', '#ff2a5f'],
+                theme: { mode: document.documentElement.getAttribute('data-theme') || 'dark' },
+                stroke: { width: [3, 2, 2], curve: 'smooth', dashArray: [0, 0, 4] },
+                colors: ['#38bdf8', '#10b981', '#a855f7'],
                 series: [
-                    { name: 'Daily Avg Temp (°C)', data: avgTemps },
-                    { name: '7-Day Moving Avg', data: ma7 },
-                    { name: '30-Day Moving Avg', data: ma30 }
+                    { name: 'Daily Avg Temp (°C)', data: actualTemp },
+                    { name: '7-Day Spark Moving Avg', data: ma7 },
+                    { name: '30-Day Spark Moving Avg', data: ma30 }
                 ],
-                xaxis: { categories: dates },
-                yaxis: { labels: { formatter: (val) => val ? val.toFixed(1) + ' °C' : '' } },
-                grid: { borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)' },
-                tooltip: { theme: isDarkMode ? 'dark' : 'light' }
+                xaxis: { categories: dates, labels: { style: { colors: '#94a3b8' } } },
+                yaxis: { labels: { style: { colors: '#94a3b8' } } },
+                grid: { borderColor: 'rgba(255, 255, 255, 0.08)' }
             };
 
             if (movingChart) movingChart.destroy();
@@ -1122,149 +1182,75 @@
             movingChart.render();
         }
 
-        function setChartDays(days, el) {
-            currentDays = days;
-            document.querySelectorAll('.panel .filter-group .pill').forEach(p => {
-                if (p.parentNode === el.parentNode) p.classList.remove('active');
-            });
-            el.classList.add('active');
-            loadCityChartData();
+        function renderHourlyChart(hourlyData) {
+            const hours = hourlyData.map(h => `${h.hour}:00`);
+            const temps = hourlyData.map(h => h.temperature);
+            const humidity = hourlyData.map(h => h.humidity);
+
+            const options = {
+                chart: { type: 'area', height: 380, toolbar: { show: false }, background: 'transparent' },
+                theme: { mode: document.documentElement.getAttribute('data-theme') || 'dark' },
+                stroke: { width: 3, curve: 'smooth' },
+                colors: ['#ff3b5c', '#38bdf8'],
+                fill: { type: 'gradient', gradient: { opacityFrom: 0.45, opacityTo: 0.05 } },
+                series: [
+                    { name: 'Temperature (°C)', data: temps },
+                    { name: 'Humidity (%)', data: humidity }
+                ],
+                xaxis: { categories: hours, labels: { style: { colors: '#94a3b8' } } },
+                yaxis: { labels: { style: { colors: '#94a3b8' } } },
+                grid: { borderColor: 'rgba(255, 255, 255, 0.08)' }
+            };
+
+            if (hourlyChart) hourlyChart.destroy();
+            hourlyChart = new ApexCharts(document.querySelector("#hourlyChart"), options);
+            hourlyChart.render();
         }
 
-        async function loadAnomaliesData() {
-            const res = await fetch(`/api/anomalies?status=${currentAnomalyFilter}`);
-            rawAnomalies = await res.json();
-            filterAnomaliesUI();
-        }
+        async function runSparkQuery(queryType) {
+            const sqlDisplay = document.getElementById('sqlStatementDisplay');
+            const timeLabel = document.getElementById('queryTimeLabel');
+            const head = document.getElementById('queryTableHead');
+            const body = document.getElementById('queryTableBody');
 
-        function setAnomalyFilter(filter, el) {
-            currentAnomalyFilter = filter;
-            el.parentNode.querySelectorAll('.pill').forEach(p => p.classList.remove('active'));
-            el.classList.add('active');
-            loadAnomaliesData();
-        }
-
-        function filterAnomaliesUI() {
-            const query = document.getElementById('searchAnomaly').value.toLowerCase();
-            const container = document.getElementById('anomalyList');
-            container.innerHTML = '';
-
-            let filtered = rawAnomalies.filter(a => a.city.toLowerCase().includes(query));
-
-            if (currentCity) {
-                filtered = filtered.filter(a => a.city.toLowerCase() === currentCity.toLowerCase());
-                document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: ${currentCity}`;
-            } else {
-                document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: All Cities`;
-            }
-
-            const heatwaves = filtered.filter(a => a.anomaly_status === 'EXTREME HEATWAVE').length;
-            const coldsnaps = filtered.filter(a => a.anomaly_status === 'EXTREME COLD SNAP').length;
-
-            document.getElementById('statHeatwaveCount').innerText = heatwaves;
-            document.getElementById('statColdSnapCount').innerText = coldsnaps;
-
-            if (filtered.length === 0) {
-                container.innerHTML = `<div style="color: var(--text-muted); text-align: center; padding: 25px;">No extreme climate anomalies flagged for ${currentCity || 'this filter'}.</div>`;
-                return;
-            }
-
-            filtered.forEach(item => {
-                const div = document.createElement('div');
-                const isHeat = item.anomaly_status === 'EXTREME HEATWAVE';
-                div.className = `anomaly-card ${isHeat ? 'heat' : 'cold'}`;
-
-                div.innerHTML = `
-                    <div>
-                        <div style="font-weight: 800; font-size: 0.98rem;">${item.city} <span style="font-size: 0.78rem; color: var(--text-muted);">(${item.date})</span></div>
-                        <div style="font-size: 0.82rem; color: var(--text-muted);">Temp: ${item.temperature}°C | Baseline Mean: ${item.city_mean_temp.toFixed(1)}°C</div>
-                    </div>
-                    <div>
-                        <span class="badge ${isHeat ? 'badge-heat' : 'badge-cold'}">${item.anomaly_status} (Z=${item.z_score})</span>
-                    </div>
-                `;
-                container.appendChild(div);
-            });
-        }
-
-        async function loadRawPreviewData() {
+            timeLabel.innerText = "Running Spark SQL Query...";
+            
             try {
-                const res = await fetch('/api/raw_preview');
-                const data = await res.json();
-
-                if (data.metadata) {
-                    document.getElementById('metaTotalRows').innerText = `${data.metadata.total_records} Hourly Records`;
-                }
-
-                const tbody = document.getElementById('rawTableBody');
-                tbody.innerHTML = '';
-
-                data.rows.forEach(r => {
-                    const tr = document.createElement('tr');
-                    tr.onclick = () => {
-                        currentCountry = r.country;
-                        document.getElementById('countrySelect').value = r.country;
-                        onCountryChanged();
-                        currentCity = r.city;
-                        document.getElementById('citySelect').value = r.city;
-                        onCityChanged();
-                    };
-                    tr.innerHTML = `
-                        <td><strong>${r.city}</strong></td>
-                        <td>${r.country}</td>
-                        <td>${r.region}</td>
-                        <td>${r.timestamp}</td>
-                        <td><span style="color: var(--primary); font-weight: 700;">${r.temperature} °C</span></td>
-                        <td>${r.humidity} %</td>
-                        <td>${r.wind_speed} km/h</td>
-                        <td>${r.precipitation} mm</td>
-                        <td>${r.surface_pressure} hPa</td>
-                    `;
-                    tbody.appendChild(tr);
+                const res = await fetch('/api/query', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ query_type: queryType })
                 });
 
+                const data = await res.json();
+                if (data.error) return;
+
+                sqlDisplay.innerText = `-- Spark SQL Plan:\n${data.sql_statement}`;
+                timeLabel.innerText = `Query Executed in ${data.execution_time_ms}ms (${data.row_count} rows returned)`;
+
+                head.innerHTML = `<tr>${data.columns.map(c => `<th>${c}</th>`).join('')}</tr>`;
+                body.innerHTML = data.rows.map(row => `
+                    <tr>
+                        ${data.columns.map(c => `<td style="font-weight: 600;">${row[c]}</td>`).join('')}
+                    </tr>
+                `).join('');
             } catch (err) {
-                console.error("Error loading raw dataset preview:", err);
+                console.error("Error executing query:", err);
             }
-        }
-
-        async function loadRegionalData() {
-            const res = await fetch('/api/regional');
-            const data = await res.json();
-
-            const tbody = document.getElementById('regionalTableBody');
-            tbody.innerHTML = '';
-
-            data.forEach(r => {
-                const tr = document.createElement('tr');
-                tr.innerHTML = `
-                    <td><strong>${r.region}</strong></td>
-                    <td>${r.total_cities}</td>
-                    <td><span style="color: var(--primary); font-weight: 800;">${r.region_avg_temp} °C</span></td>
-                    <td>${r.region_min_temp} °C / ${r.region_max_temp} °C</td>
-                    <td>${r.region_avg_humidity} %</td>
-                    <td>${r.region_total_precipitation} mm</td>
-                `;
-                tbody.appendChild(tr);
-            });
         }
 
         async function triggerRefresh() {
             const icon = document.getElementById('refreshIcon');
             icon.classList.add('spin');
-            showToast("Fetching live metrics from Open-Meteo API & running PySpark analytics...");
-
             try {
                 const res = await fetch('/api/refresh', { method: 'POST' });
-                const json = await res.json();
-                if (json.success) {
-                    showToast("Pipeline refreshed! Analytics updated.");
+                const data = await res.json();
+                if (data.success) {
+                    showToast("Pipeline Refreshed Successfully!");
                     await initDashboard();
-                } else {
-                    alert("Refresh error: " + json.error);
                 }
-            } catch (e) {
-                console.error(e);
+            } catch (err) {
+                showToast("Failed to refresh pipeline");
             } finally {
                 icon.classList.remove('spin');
             }
@@ -1274,10 +1260,7 @@
             window.open('/api/daily?city=all', '_blank');
         }
 
-        window.onload = () => {
-            initDashboard();
-            setTimeout(() => { if (map) map.invalidateSize(); }, 500);
-        };
+        window.onload = initDashboard;
     </script>
 </body>
 </html>
