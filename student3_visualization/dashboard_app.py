@@ -135,10 +135,10 @@ def get_timeframe_analytics():
         "annual_max": round(float(all_city_temp.max()), 2),
         "annual_std": round(float(all_city_temp.std()), 2),
         "seasonal_baselines": {
-            "Spring (Haru 🌸)": round(float(all_city_temp.mean() - 1.5), 1),
-            "Summer (Natsu ☀️)": round(float(all_city_temp.max() - 2.0), 1),
-            "Autumn (Aki 🍁)": round(float(all_city_temp.mean() + 0.5), 1),
-            "Winter (Fuyu ❄️)": round(float(all_city_temp.min() + 3.0), 1)
+            "Spring (春 🌸)": round(float(all_city_temp.mean() - 1.5), 1),
+            "Summer (夏 ☀️)": round(float(all_city_temp.max() - 2.0), 1),
+            "Autumn (秋 🍁)": round(float(all_city_temp.mean() + 0.5), 1),
+            "Winter (冬 ❄️)": round(float(all_city_temp.min() + 3.0), 1)
         }
     }
 
