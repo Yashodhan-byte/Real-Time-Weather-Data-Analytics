@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
     <title>Real-Time Weather Intelligence Command Center</title>
     
     <!-- Google Fonts, ApexCharts, Leaflet Maps -->
@@ -13,44 +14,87 @@
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 
     <style>
-        /* Theme Tokens (Dark Mode Default vs Light Mode) */
-        :root {
-            --bg-body: #080d1a;
-            --card-bg: rgba(15, 23, 42, 0.85);
-            --card-hover: rgba(30, 41, 59, 0.95);
-            --border-color: rgba(255, 255, 255, 0.1);
+        /* Multi-Color Palette Presets */
+        body.theme-amber {
+            --bg-body: #0d0b18;
+            --card-bg: rgba(26, 20, 48, 0.85);
+            --card-hover: rgba(38, 30, 70, 0.95);
+            --border-color: rgba(245, 158, 11, 0.25);
             
-            --primary: #10b981; /* Neon Emerald */
-            --primary-glow: rgba(16, 185, 129, 0.35);
-            --secondary: #6366f1; /* Cyber Sapphire */
-            --accent: #06b6d4; /* Electric Cyan */
+            --primary: #f59e0b; /* Amber Gold */
+            --primary-glow: rgba(245, 158, 11, 0.4);
+            --secondary: #8b5cf6; /* Neon Purple */
+            --accent: #ec4899; /* Vibrant Pink */
+            
+            --heat-red: #ff2a5f;
+            --cold-blue: #06b6d4;
+            --text-main: #ffffff;
+            --text-muted: #cbd5e1;
+            --input-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        body.theme-emerald {
+            --bg-body: #041410;
+            --card-bg: rgba(10, 38, 30, 0.85);
+            --card-hover: rgba(16, 56, 44, 0.95);
+            --border-color: rgba(16, 185, 129, 0.25);
+            
+            --primary: #10b981; /* Emerald */
+            --primary-glow: rgba(16, 185, 129, 0.4);
+            --secondary: #06b6d4; /* Cyan */
+            --accent: #3b82f6;
             
             --heat-red: #ff3b5c;
-            --heat-glow: rgba(255, 59, 92, 0.4);
             --cold-blue: #38bdf8;
-            --cold-glow: rgba(56, 189, 248, 0.4);
-            
-            --text-main: #f8fafc;
+            --text-main: #ffffff;
             --text-muted: #94a3b8;
-            --input-bg: rgba(0, 0, 0, 0.3);
-            --shadow-color: rgba(0, 0, 0, 0.4);
+            --input-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        body.theme-violet {
+            --bg-body: #110826;
+            --card-bg: rgba(28, 14, 60, 0.85);
+            --card-hover: rgba(45, 23, 95, 0.95);
+            --border-color: rgba(168, 85, 247, 0.25);
+            
+            --primary: #a855f7; /* Violet */
+            --primary-glow: rgba(168, 85, 247, 0.4);
+            --secondary: #ec4899; /* Pink */
+            --accent: #6366f1;
+            
+            --heat-red: #ff2a5f;
+            --cold-blue: #06b6d4;
+            --text-main: #ffffff;
+            --text-muted: #d8b4fe;
+            --input-bg: rgba(0, 0, 0, 0.4);
+        }
+
+        body.theme-cyan {
+            --bg-body: #06131e;
+            --card-bg: rgba(12, 33, 52, 0.85);
+            --card-hover: rgba(18, 50, 78, 0.95);
+            --border-color: rgba(6, 182, 212, 0.25);
+            
+            --primary: #06b6d4; /* Cyan */
+            --primary-glow: rgba(6, 182, 212, 0.4);
+            --secondary: #3b82f6; /* Blue */
+            --accent: #10b981;
+            
+            --heat-red: #ff3b5c;
+            --cold-blue: #38bdf8;
+            --text-main: #ffffff;
+            --text-muted: #94a3b8;
+            --input-bg: rgba(0, 0, 0, 0.4);
         }
 
         body.light-mode {
-            --bg-body: #f1f5f9;
-            --card-bg: rgba(255, 255, 255, 0.9);
+            --bg-body: #f8fafc;
+            --card-bg: rgba(255, 255, 255, 0.92);
             --card-hover: rgba(241, 245, 249, 1);
-            --border-color: rgba(0, 0, 0, 0.1);
-            
-            --primary: #059669;
-            --primary-glow: rgba(5, 150, 105, 0.25);
-            --secondary: #4f46e5;
-            --accent: #0891b2;
-            
+            --border-color: rgba(0, 0, 0, 0.12);
             --text-main: #0f172a;
-            --text-muted: #64748b;
-            --input-bg: rgba(255, 255, 255, 0.8);
-            --shadow-color: rgba(0, 0, 0, 0.08);
+            --text-muted: #475569;
+            --input-bg: rgba(241, 245, 249, 0.9);
         }
 
         * {
@@ -69,7 +113,7 @@
             overflow-x: hidden;
             background-image: 
                 radial-gradient(circle at 15% 15%, var(--primary-glow) 0%, transparent 45%),
-                radial-gradient(circle at 85% 85%, rgba(99, 102, 241, 0.08) 0%, transparent 45%);
+                radial-gradient(circle at 85% 85%, rgba(139, 92, 246, 0.12) 0%, transparent 45%);
             background-attachment: fixed;
         }
 
@@ -86,7 +130,7 @@
             display: flex;
             align-items: center;
             gap: 12px;
-            box-shadow: 0 4px 20px var(--shadow-color);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
         }
 
         .ticker-title {
@@ -149,9 +193,9 @@
         }
 
         .header-title h1 {
-            font-size: 2.2rem;
+            font-size: 2.3rem;
             font-weight: 900;
-            background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 50%, var(--secondary) 100%);
+            background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 50%, var(--accent) 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             display: flex;
@@ -185,11 +229,6 @@
             align-items: center;
             gap: 8px;
             backdrop-filter: blur(10px);
-            transition: all 0.25s ease;
-        }
-        .theme-toggle-btn:hover {
-            border-color: var(--primary);
-            box-shadow: 0 0 16px var(--primary-glow);
         }
 
         .btn {
@@ -241,7 +280,7 @@
             box-shadow: 0 0 16px var(--primary-glow);
         }
 
-        /* City Mini Cards */
+        /* City Mini Cards Carousel */
         .city-cards-scroll {
             display: flex;
             gap: 14px;
@@ -287,8 +326,14 @@
             border-radius: 20px;
             padding: 22px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 6px 20px var(--shadow-color);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.2);
             transition: all 0.3s ease;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+            box-shadow: 0 12px 30px var(--primary-glow);
         }
 
         .kpi-label {
@@ -308,7 +353,7 @@
             font-family: 'JetBrains Mono', monospace;
         }
 
-        .kpi-sub { font-size: 0.82rem; color: var(--primary); margin-top: 8px; font-weight: 600; }
+        .kpi-sub { font-size: 0.82rem; color: var(--primary); margin-top: 8px; font-weight: 700; }
 
         /* Layout Grid */
         .grid-2col {
@@ -326,7 +371,7 @@
             border-radius: 22px;
             padding: 24px;
             backdrop-filter: blur(16px);
-            box-shadow: 0 10px 30px var(--shadow-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.25);
         }
 
         .panel-header {
@@ -386,7 +431,6 @@
             font-size: 0.85rem !important;
             border-radius: 8px !important;
             padding: 6px 12px !important;
-            box-shadow: 0 4px 15px var(--shadow-color) !important;
         }
 
         /* City Popup Panel */
@@ -397,7 +441,6 @@
             padding: 20px;
             backdrop-filter: blur(20px);
             margin-top: 16px;
-            box-shadow: 0 10px 30px var(--shadow-color);
         }
 
         .city-popup-title {
@@ -425,7 +468,7 @@
         .mini-stat-label { font-size: 0.72rem; color: var(--text-muted); text-transform: uppercase; }
         .mini-stat-val { font-size: 1.2rem; font-weight: 800; color: var(--primary); font-family: 'JetBrains Mono', monospace; }
 
-        /* Multi-Section Anomaly Dashboard Elements */
+        /* Anomaly Elements */
         .anomaly-sub-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -499,10 +542,10 @@
             font-weight: 800;
             font-family: 'JetBrains Mono', monospace;
         }
-        .badge-heat { background: rgba(255, 59, 92, 0.18); color: var(--heat-red); border: 1px solid var(--heat-red); }
-        .badge-cold { background: rgba(56, 189, 248, 0.18); color: var(--cold-blue); border: 1px solid var(--cold-blue); }
+        .badge-heat { background: rgba(255, 42, 95, 0.18); color: var(--heat-red); border: 1px solid var(--heat-red); }
+        .badge-cold { background: rgba(6, 182, 212, 0.18); color: var(--cold-blue); border: 1px solid var(--cold-blue); }
 
-        /* Dataset Info Card & Raw Preview */
+        /* Dataset Info Card */
         .dataset-meta-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -531,7 +574,7 @@
         @keyframes spin { 100% { transform: rotate(360deg); } }
     </style>
 </head>
-<body>
+<body class="theme-amber">
 
     <div id="toast">Pipeline Synced Successfully!</div>
 
@@ -545,19 +588,27 @@
 
     <header>
         <div class="header-title">
-            <h1>🌿 Real-Time Weather Intelligence Platform</h1>
+            <h1>✨ Real-Time Weather Intelligence Platform</h1>
             <p>PySpark Window Analytics, Hive Partitioning & Open-Meteo Ingestion (21 Global Cities)</p>
         </div>
         <div class="controls-bar">
-            <!-- Theme Toggle Bar -->
+            <!-- Theme Color Preset Selector -->
+            <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">Color Theme:</label>
+            <select id="colorThemeSelect" onchange="changeColorTheme()">
+                <option value="theme-amber" selected>🔥 Gold & Cyber Amber</option>
+                <option value="theme-emerald">🌿 Neon Emerald & Mint</option>
+                <option value="theme-violet">🔮 Midnight Violet & Magenta</option>
+                <option value="theme-cyan">⚡ Electric Cyan & Blue</option>
+            </select>
+
+            <!-- Light/Dark Mode Switch -->
             <button class="theme-toggle-btn" onclick="toggleTheme()" id="themeToggleBtn">
                 🌙 Dark Mode
             </button>
 
-            <!-- Step 1: Country Selection -->
+            <!-- Step 1: Country Selector -->
             <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">1. Country:</label>
             <select id="countrySelect" onchange="onCountryChanged()">
-                <option value="" disabled selected>-- Choose Country --</option>
                 <option value="Japan">Japan 🇯🇵</option>
                 <option value="UK">UK 🇬🇧</option>
                 <option value="USA">USA 🇺🇸</option>
@@ -567,10 +618,10 @@
                 <option value="Brazil">Brazil 🇧🇷</option>
             </select>
 
-            <!-- Step 2: City Selection -->
+            <!-- Step 2: City Selector -->
             <label style="font-size: 0.85rem; color: var(--text-muted); font-weight: 700;">2. City:</label>
-            <select id="citySelect" onchange="onCityChanged()" disabled>
-                <option value="">-- Choose Country First --</option>
+            <select id="citySelect" onchange="onCityChanged()">
+                <option value="Tokyo">Tokyo</option>
             </select>
 
             <button class="btn btn-primary" id="btnRefresh" onclick="triggerRefresh()">
@@ -611,15 +662,15 @@
     <div class="grid-2col">
         <div class="panel">
             <div class="panel-header">
-                <div class="panel-title">📡 Station Tactical Radar (Filtered by Selected City)</div>
+                <div class="panel-title">📡 Station Tactical Radar (Selected City Focus)</div>
                 <div style="font-size: 0.85rem; color: var(--text-muted);">Click pin to view city analytics</div>
             </div>
             <div id="map-container">
                 <div id="map"></div>
             </div>
 
-            <!-- Selected City Deep-Dive Detail Panel -->
-            <div class="city-popup-panel" id="cityPopupPanel" style="display: none;">
+            <!-- Selected City Deep-Dive Detail Panel (Always visible for selected city) -->
+            <div class="city-popup-panel" id="cityPopupPanel">
                 <div class="city-popup-title">
                     <div>
                         <span id="popupCityName">Tokyo</span>
@@ -652,7 +703,7 @@
             </div>
         </div>
 
-        <!-- Enhanced Multi-Section Extreme Anomalies Panel -->
+        <!-- Multi-Section Extreme Anomalies Panel -->
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">⚡ Extreme Weather Anomalies Intelligence</div>
@@ -671,20 +722,20 @@
                 </div>
             </div>
 
-            <!-- Section 2: Anomaly Category Filter Pills -->
+            <!-- Section 2: Category Filter Pills -->
             <div class="filter-group">
                 <div class="pill active" onclick="setAnomalyFilter('all', this)">All Anomalies</div>
                 <div class="pill" onclick="setAnomalyFilter('heatwave', this)">🔥 Heatwaves</div>
                 <div class="pill" onclick="setAnomalyFilter('coldsnap', this)">❄️ Cold Snaps</div>
             </div>
 
-            <!-- Section 3: Anomaly Feed Filtered strictly by Selected City! -->
-            <div style="font-size: 0.82rem; color: var(--primary); font-weight: 700; margin-bottom: 8px;" id="anomalyCityFocusLabel">
-                Showing Anomalies for: All Cities
+            <!-- Section 3: City-Specific Anomaly Feed -->
+            <div style="font-size: 0.85rem; color: var(--primary); font-weight: 700; margin-bottom: 8px;" id="anomalyCityFocusLabel">
+                Showing Anomalies for: Tokyo
             </div>
 
             <div class="anomaly-scroll" id="anomalyList">
-                <div style="color: var(--text-muted); text-align: center; padding: 20px;">Loading live anomaly feed...</div>
+                <div style="color: var(--text-muted); text-align: center; padding: 20px;">Loading anomaly feed...</div>
             </div>
         </div>
     </div>
@@ -694,7 +745,7 @@
         <div class="panel">
             <div class="panel-header">
                 <div class="panel-title">
-                    📈 Visualization 1: Moving Averages Trend (<span id="chartCityLabel">Select a City</span>)
+                    📈 Visualization 1: Moving Averages Trend (<span id="chartCityLabel">Tokyo</span>)
                 </div>
                 <div class="filter-group" style="margin-bottom: 0;">
                     <div class="pill active" onclick="setChartDays(7, this)">7D</div>
@@ -794,13 +845,21 @@
         let markers = {};
         let movingChart = null;
         let hourlyChart = null;
-        let currentCountry = '';
-        let currentCity = '';
+        let currentCountry = 'Japan';
+        let currentCity = 'Tokyo';
         let currentDays = 30;
         let currentAnomalyFilter = 'all';
         let rawAnomalies = [];
         let allCitiesData = [];
         let isDarkMode = true;
+
+        function changeColorTheme() {
+            const theme = document.getElementById('colorThemeSelect').value;
+            document.body.className = theme + (isDarkMode ? '' : ' light-mode');
+            if (movingChart) loadCityChartData();
+            if (currentCity) loadCityDetails();
+            showToast(`Theme changed to: ${theme.replace('theme-', '').toUpperCase()}`);
+        }
 
         function toggleTheme() {
             isDarkMode = !isDarkMode;
@@ -825,14 +884,18 @@
             await loadAnomaliesData();
             await loadRawPreviewData();
             await loadRegionalData();
+            
+            // Auto select Japan -> Tokyo by default
+            document.getElementById('countrySelect').value = 'Japan';
+            onCountryChanged();
         }
 
         function initMap() {
             if (map) return;
             
             map = L.map('map', {
-                center: [20, 0],
-                zoom: 2,
+                center: [35.6762, 139.6503],
+                zoom: 5,
                 zoomControl: true
             });
 
@@ -856,7 +919,6 @@
                 document.getElementById('kpiPrecip').innerText = summary.total_precip + ' mm';
 
                 allCitiesData = summary.city_coords;
-                renderCityCards(allCitiesData);
 
             } catch (err) {
                 console.error("Error loading summary:", err);
@@ -867,9 +929,7 @@
             currentCountry = document.getElementById('countrySelect').value;
             const citySelect = document.getElementById('citySelect');
             
-            citySelect.disabled = false;
-            citySelect.innerHTML = '<option value="" disabled selected>-- Choose City --</option>';
-
+            citySelect.innerHTML = '';
             const filteredCities = allCitiesData.filter(c => c.country === currentCountry);
 
             filteredCities.forEach(c => {
@@ -879,8 +939,13 @@
                 citySelect.appendChild(opt);
             });
 
+            if (filteredCities.length > 0) {
+                currentCity = filteredCities[0].city;
+                citySelect.value = currentCity;
+                onCityChanged();
+            }
+
             renderCityCards(filteredCities);
-            showToast(`Country selected: ${currentCountry}. Choose a city to inspect.`);
         }
 
         function renderCityCards(cities) {
@@ -896,9 +961,6 @@
                 const card = document.createElement('div');
                 card.className = `city-mini-card ${c.city === currentCity ? 'active' : ''}`;
                 card.onclick = () => {
-                    currentCountry = c.country;
-                    document.getElementById('countrySelect').value = c.country;
-                    onCountryChanged();
                     currentCity = c.city;
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
@@ -925,9 +987,6 @@
                 });
 
                 marker.on('click', () => {
-                    currentCountry = c.country;
-                    document.getElementById('countrySelect').value = c.country;
-                    onCountryChanged();
                     currentCity = c.city;
                     document.getElementById('citySelect').value = c.city;
                     onCityChanged();
@@ -944,8 +1003,6 @@
             currentCity = document.getElementById('citySelect').value;
             if (!currentCity) return;
 
-            document.getElementById('cityPopupPanel').style.display = 'block';
-
             document.querySelectorAll('.city-mini-card').forEach(card => {
                 if (card.querySelector('.city-name').innerText === currentCity) {
                     card.classList.add('active');
@@ -956,7 +1013,7 @@
 
             await loadCityDetails();
             await loadCityChartData();
-            filterAnomaliesUI(); // Filter anomalies strictly by selected city!
+            filterAnomaliesUI();
 
             const target = allCitiesData.find(c => c.city === currentCity);
             if (target && map) {
@@ -989,8 +1046,8 @@
                 const humidities = data.hourly_24h.map(h => h.humidity);
 
                 const hourlyOptions = {
-                    chart: { type: 'bar', height: 360, toolbar: { show: false }, background: 'transparent', foreColor: isDarkMode ? '#94a3b8' : '#64748b' },
-                    colors: ['#10b981', '#06b6d4'],
+                    chart: { type: 'bar', height: 360, toolbar: { show: false }, background: 'transparent', foreColor: isDarkMode ? '#cbd5e1' : '#475569' },
+                    colors: ['#f59e0b', '#8b5cf6'],
                     series: [
                         { name: 'Temperature (°C)', type: 'line', data: temps },
                         { name: 'Humidity (%)', type: 'bar', data: humidities }
@@ -999,8 +1056,8 @@
                     plotOptions: { bar: { columnWidth: '50%', borderRadius: 4 } },
                     xaxis: { categories: hours },
                     yaxis: [
-                        { title: { text: 'Temperature (°C)', style: { color: '#10b981' } } },
-                        { opposite: true, title: { text: 'Humidity (%)', style: { color: '#06b6d4' } } }
+                        { title: { text: 'Temperature (°C)', style: { color: '#f59e0b' } } },
+                        { opposite: true, title: { text: 'Humidity (%)', style: { color: '#8b5cf6' } } }
                     ],
                     grid: { borderColor: isDarkMode ? 'rgba(255, 255, 255, 0.08)' : 'rgba(0, 0, 0, 0.08)' },
                     tooltip: { theme: isDarkMode ? 'dark' : 'light' }
@@ -1035,7 +1092,7 @@
                     height: 360,
                     toolbar: { show: true, tools: { download: true } },
                     background: 'transparent',
-                    foreColor: isDarkMode ? '#94a3b8' : '#64748b'
+                    foreColor: isDarkMode ? '#cbd5e1' : '#475569'
                 },
                 stroke: { width: [3, 3, 3], curve: 'smooth', dashArray: [0, 0, 4] },
                 fill: {
@@ -1048,7 +1105,7 @@
                         opacityTo: 0.05
                     }
                 },
-                colors: ['#10b981', '#6366f1', '#ff3b5c'],
+                colors: ['#f59e0b', '#8b5cf6', '#ff2a5f'],
                 series: [
                     { name: 'Daily Avg Temp (°C)', data: avgTemps },
                     { name: '7-Day Moving Avg', data: ma7 },
@@ -1092,7 +1149,6 @@
             const container = document.getElementById('anomalyList');
             container.innerHTML = '';
 
-            // Filter by search query AND strictly by selected city if chosen!
             let filtered = rawAnomalies.filter(a => a.city.toLowerCase().includes(query));
 
             if (currentCity) {
@@ -1102,7 +1158,6 @@
                 document.getElementById('anomalyCityFocusLabel').innerText = `Showing Anomalies for: All Cities`;
             }
 
-            // Update sub-stat cards
             const heatwaves = filtered.filter(a => a.anomaly_status === 'EXTREME HEATWAVE').length;
             const coldsnaps = filtered.filter(a => a.anomaly_status === 'EXTREME COLD SNAP').length;
 
